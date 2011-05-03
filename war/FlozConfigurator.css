@@ -1,0 +1,62 @@
+body {
+	margin-top: 0;
+	
+	font-size: 1.1em;
+	font-family: sans-serif;
+	
+	background-color: #AAAAAA;
+}
+
+div#MainRectangle {
+	margin-top: 0;
+	margin-left: 2em;
+	margin-right: 2em;
+	
+	padding-left: 1em;
+	padding-right: 1em;
+	
+	border-left: 2px solid black;
+	border-right: 2px solid black;
+	
+	background-color: white;
+}
+
+h1 {
+	width: 100%;
+	color: #AAAAAA;
+	
+	text-decoration: underline;
+}
+
+div#Header {
+	font-size: 1.2em;
+	font-weight: bold;
+	
+	text-align: center;
+}
+
+div#StackContainer {
+	width: 5em;
+	float: left;
+	height: 100%;
+}
+
+#loginPage {
+	font-size: 1.4em;
+	font-family: sans-serif;
+	
+	text-align: center;
+}
+
+div#footer {
+	font-size: 0.9em;
+	font-family: monospace;
+	
+	text-align: center;
+}
+
+
+#mainPanel {
+	margin-left: 2em;
+	margin-right: 2em;
+}

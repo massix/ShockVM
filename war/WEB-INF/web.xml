@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  
+  <!-- Servlets -->
+  <servlet>
+  	<servlet-name>user</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.LoginUserImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>userinfo</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.GetUserInfoImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>md5hash</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.GetPasswordHashImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>usernamevalid</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.IsUsernameValidImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>registeruser</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.RegisterUserImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>user</servlet-name>
+  	<url-pattern>/flozconfigurator/user</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>userinfo</servlet-name>
+  	<url-pattern>/flozconfigurator/userinfo</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>md5hash</servlet-name>
+  	<url-pattern>/flozconfigurator/md5hash</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>usernamevalid</servlet-name>
+  	<url-pattern>/flozconfigurator/usernamevalid</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>registeruser</servlet-name>
+  	<url-pattern>/flozconfigurator/registeruser</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>FlozConfigurator.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>
