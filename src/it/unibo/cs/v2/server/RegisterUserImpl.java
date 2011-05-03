@@ -72,9 +72,13 @@ public class RegisterUserImpl extends RemoteServiceServlet implements RegisterUs
 			newPassword.setAttribute("encrypt", "BCrypt");
 			newPassword.setTextContent(encodedPassword);
 			
+			Element newHome = users.createElement("home");
+			newHome.setTextContent(getServletContext().getRealPath("users/" + username));
+			
 			rootElement.appendChild(newUser);
 			newUser.appendChild(newLogin);
 			newUser.appendChild(newPassword);
+			newUser.appendChild(newHome);
 			
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
@@ -84,6 +88,21 @@ public class RegisterUserImpl extends RemoteServiceServlet implements RegisterUs
 			StreamResult result = new StreamResult(usersFile);
 			DOMSource source = new DOMSource(users);
 			transformer.transform(source, result);
+			
+			/**
+			 * Create the users directory
+			 */
+			File usersDir = new File(getServletContext().getRealPath("users"));
+			if (!usersDir.exists())
+				usersDir.mkdir();
+			
+			if (usersDir.exists() && usersDir.isDirectory()) {
+				usersDir = new File(getServletContext().getRealPath("users/" + username));
+				usersDir.mkdir();
+			}
+			
+			else
+				throw new IOException("I wasn't able to create a new folder in the server. Contact the webmaster.");
 
 			return true;
 		} catch (Exception e) {

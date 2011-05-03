@@ -57,10 +57,9 @@ public class GetUserInfoImpl extends RemoteServiceServlet implements
 					continue;
 
 				Element user = (Element) n;
-				Element login = (Element) user.getElementsByTagName("login")
-						.item(0);
-				Element password = (Element) user.getElementsByTagName(
-						"password").item(0);
+				Element login = (Element) user.getElementsByTagName("login").item(0);
+				Element password = (Element) user.getElementsByTagName("password").item(0);
+				Element home = (Element) user.getElementsByTagName("home").item(0);
 
 				if (login.getTextContent().equals(userName)) {
 					HashMap<String, String> ret = new HashMap<String, String>();
@@ -69,6 +68,7 @@ public class GetUserInfoImpl extends RemoteServiceServlet implements
 					ret.put("login", login.getTextContent());
 					ret.put("password", password.getTextContent());
 					ret.put("encrypt", password.getAttribute("encrypt"));
+					ret.put("home", home.getTextContent());
 
 					return ret;
 
