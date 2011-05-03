@@ -24,13 +24,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 
 public class LeftPanel extends StackLayoutPanel {
-	private HashMap<String, String> userInfo;
 	private final int HEADERSIZE = 2;
 	
 	public LeftPanel(HashMap<String, String> userInfo) {
 		super(Unit.EM);
-		
-		this.userInfo = userInfo;
 		
 		add(new HTML("User Details"), userInfo.get("displayname"), HEADERSIZE);
 		add(new HTML("Machines List"), "Your Machines", HEADERSIZE);

@@ -115,7 +115,13 @@ public class RegistrationForm extends HTMLPanel implements ClickHandler, KeyUpHa
 
 						@Override
 						public void onSuccess(Boolean result) {
-							showLabel(result.toString(), "green");
+							if (result) {
+								showLabel("User " + username.getText() + " successfully created. You can now login.", "green");
+								mainTable.setVisible(false);
+							}
+							else
+								showLabel("An unknown error occured while creating the user. " +
+										"This is not your fault, please contact the webmaster", "red");
 						}
 					});
 				}

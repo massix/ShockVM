@@ -22,12 +22,8 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.HTMLPanel;
 
 public class MainPage extends HTMLPanel {
-	private HashMap<String, String> userInfo;
-	
-	
 	public MainPage(HashMap<String, String> userInfo) {
 		super("<h2>FLOZ Configurator welcomes you!</h2>");
-		this.userInfo = userInfo;
 		getElement().getStyle().setPaddingLeft(3, Unit.EM);
 	}
 

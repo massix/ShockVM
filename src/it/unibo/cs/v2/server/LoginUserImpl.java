@@ -56,8 +56,6 @@ public class LoginUserImpl extends RemoteServiceServlet implements LoginUser {
 				Element login = (Element) user.getElementsByTagName("login").item(0);
 				Element passwordElem = (Element) user.getElementsByTagName("password").item(0);
 
-				String digestString = BCrypt.hashpw(password, BCrypt.gensalt());
-
 				if (login.getTextContent().equalsIgnoreCase(userId)) {
 					if (BCrypt.checkpw(password, passwordElem.getTextContent())) 
 						return true;
