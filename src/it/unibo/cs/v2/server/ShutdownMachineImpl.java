@@ -106,11 +106,19 @@ public class ShutdownMachineImpl extends RemoteServiceServlet implements
 				continue;
 			
 			activeMachinesWriter.write(values[0] + "::" + values[1] + "::" + values[2]);
-			if (machines.peekLast() != values)
-				activeMachinesWriter.newLine();
+			activeMachinesWriter.newLine();
 		}
 		
 		activeMachinesWriter.flush();
 		activeMachinesWriter.close();
+		
+		synchronized(this) {
+			File freeVnc = new File(getServletContext().getRealPath("/.freeServers"));
+			BufferedWriter freeVncWriter = new BufferedWriter(new FileWriter(freeVnc, true));
+			freeVncWriter.write(String.valueOf(machineProcess.getVncServer()));
+			freeVncWriter.newLine();
+			freeVncWriter.flush();
+			freeVncWriter.close();
+		};
 	}
 }

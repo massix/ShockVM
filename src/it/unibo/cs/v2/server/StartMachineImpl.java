@@ -60,6 +60,9 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 			BufferedReader br = new BufferedReader(new FileReader(activeMachines));
 			String line;
 			while ((line = br.readLine()) != null) {
+				if (line.length() < 7)
+					continue;
+
 				String[] values = line.split("::");
 				if (values == null)
 					continue;
@@ -81,24 +84,25 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		synchronized (this) {
 			final BufferedReader freeServersReader = new BufferedReader(new FileReader(freeServers));
 
-			freeVnc = freeServersReader.readLine();
-			if (freeVnc == null || freeVnc.equals(""))
-				throw new Exception("No free servers found. Wait your turn!");
+			while (freeVnc.equals("")) {
+				freeVnc = freeServersReader.readLine();
+				if (freeVnc == null)
+					throw new Exception("No free servers found. Wait your turn!");
+			}
 
 			final LinkedList<String> freeList = new LinkedList<String>();
 			String read;
-			while ((read = freeServersReader.readLine()) != null) 
-				freeList.add(read);
+			while ((read = freeServersReader.readLine()) != null) {
+				if (!read.equals(""))
+					freeList.add(read);
+			}
 
 			freeServersReader.close();
 
 			BufferedWriter freeServersWriter = new BufferedWriter(new FileWriter(freeServers));
 			for (String server : freeList) {
 				freeServersWriter.write(server);
-
-				// Avoid writing a new line at the end of file
-				if (!server.equals(freeList.peekLast()))
-					freeServersWriter.newLine();
+				freeServersWriter.newLine();
 			}
 
 			freeServersWriter.close();
@@ -155,8 +159,9 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 				pidFile.delete();
 			}
 			
-			FileWriter activeMachinesWriter = new FileWriter(activeMachines, true);
-			activeMachinesWriter.write(machineInfo.getName() + "::" + pid + "::" + freeVnc + "\n");
+			BufferedWriter activeMachinesWriter = new BufferedWriter(new FileWriter(activeMachines, true));
+			activeMachinesWriter.write(machineInfo.getName() + "::" + pid + "::" + freeVnc);
+			activeMachinesWriter.newLine();
 			activeMachinesWriter.close();
 			mp.setPid(pid);
 
