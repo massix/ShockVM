@@ -157,7 +157,7 @@ public class LeftPanel extends StackLayoutPanel {
 							public void onClick(ClickEvent event) {
 								startButton.setEnabled(false);
 								machineInfo.setBootCdrom(bootFrom.getValue(bootFrom.getSelectedIndex()).equals("d"));
-								final Image loadingGif = new Image("/loading.gif");
+								final Image loadingGif = new Image("loading.gif");
 								machinePanel.add(loadingGif);
 								
 								startMachineProxy.startViewMachine(machineInfo, new AsyncCallback<MachineProcessInfo>() {
@@ -166,6 +166,7 @@ public class LeftPanel extends StackLayoutPanel {
 									public void onFailure(Throwable caught) {
 										Window.alert(caught.getMessage());
 										machinePanel.remove(loadingGif);
+										startButton.setEnabled(true);
 									}
 
 									@Override

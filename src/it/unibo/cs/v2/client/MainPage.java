@@ -103,7 +103,7 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 					
 					@Override
 					public void onSuccess(Void result) {
-						vncApplet.setHTML("<span style=\"color: green\">Machine successfully shut down.</span>");
+						vncApplet.setHTML("<h2>Thank you</h2><span style=\"color: green\">Machine successfully shut down.</span>");
 						remove(shutdown);
 					}
 					
