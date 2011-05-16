@@ -11,15 +11,16 @@
  * See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License 
- * along with Foobar. If not, see http://www.gnu.org/licenses/.
+ * along with Floz Configurator. If not, see http://www.gnu.org/licenses/.
  */
 
 package it.unibo.cs.v2.server;
 
-import it.unibo.cs.v2.client.LoginUser;
+import it.unibo.cs.v2.servlets.LoginUser;
 
 import java.io.File;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -35,6 +36,7 @@ public class LoginUserImpl extends RemoteServiceServlet implements LoginUser {
 
 	public boolean loginUser(String userId, String password) {
 		File usersFile = new File(getServletContext().getRealPath("users.xml"));
+		VirtuaLogger logger = new VirtuaLogger(getServletContext().getRealPath("."), "login user");
 		if (password == null || password.equals(""))
 			return false;
 
@@ -57,8 +59,12 @@ public class LoginUserImpl extends RemoteServiceServlet implements LoginUser {
 				Element passwordElem = (Element) user.getElementsByTagName("password").item(0);
 
 				if (login.getTextContent().equalsIgnoreCase(userId)) {
-					if (BCrypt.checkpw(password, passwordElem.getTextContent())) 
+					if (BCrypt.checkpw(password, passwordElem.getTextContent())) {
+						HttpSession session = getThreadLocalRequest().getSession();
+						session.setAttribute("login", (String) login.getTextContent());
+						logger.log(login.getTextContent() + " has logged in");
 						return true;
+					}
 					
 					else
 						return false;
@@ -66,9 +72,9 @@ public class LoginUserImpl extends RemoteServiceServlet implements LoginUser {
 
 			}
 
+			logger.log(userId + " failed to login");
 			return false;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			return false;
 		}
 	}

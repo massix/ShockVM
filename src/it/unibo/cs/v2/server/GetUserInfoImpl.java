@@ -11,16 +11,17 @@
  * See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License 
- * along with Foobar. If not, see http://www.gnu.org/licenses/.
+ * along with Floz Configurator. If not, see http://www.gnu.org/licenses/.
  */
 
 package it.unibo.cs.v2.server;
 
-import it.unibo.cs.v2.client.GetUserInfo;
+import it.unibo.cs.v2.servlets.GetUserInfo;
 
 import java.io.File;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -36,18 +37,16 @@ public class GetUserInfoImpl extends RemoteServiceServlet implements
 		GetUserInfo {
 
 	@Override
-	public HashMap<String, String> getUserInfo(String userName) {
+	public HashMap<String, String> getUserInfo() throws Exception {
 		File usersFile = new File(getServletContext().getRealPath("users.xml"));
 
 		try {
-			DocumentBuilder db = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
+			String username = (String) getThreadLocalRequest().getSession().getAttribute("login");
+			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document users = db.parse(usersFile);
 
 			users.getDocumentElement().normalize();
-
-			users.getDocumentElement().getNodeName();
-
+			
 			NodeList usersNodeLst = users.getElementsByTagName("user");
 
 			for (int i = 0; i < usersNodeLst.getLength(); i++) {
@@ -61,25 +60,31 @@ public class GetUserInfoImpl extends RemoteServiceServlet implements
 				Element password = (Element) user.getElementsByTagName("password").item(0);
 				Element home = (Element) user.getElementsByTagName("home").item(0);
 
-				if (login.getTextContent().equals(userName)) {
+
+				
+				if (login.getTextContent().equals(username)) {		
 					HashMap<String, String> ret = new HashMap<String, String>();
+
+					HttpSession session = getThreadLocalRequest().getSession();
+					
 					ret.put("displayname", user.getAttribute("displayname"));
 					ret.put("role", login.getAttribute("role"));
 					ret.put("login", login.getTextContent());
 					ret.put("password", password.getTextContent());
 					ret.put("encrypt", password.getAttribute("encrypt"));
 					ret.put("home", home.getTextContent());
+					
+					session.setAttribute("password", password.getTextContent());
+					session.setAttribute("home", home.getTextContent());
 
 					return ret;
-
 				}
 
 			}
 
 			return null;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			return null;
+			throw e;
 		}
 	}
 

@@ -11,13 +11,13 @@
  * See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License 
- * along with Foobar. If not, see http://www.gnu.org/licenses/.
+ * along with Floz Configurator. If not, see http://www.gnu.org/licenses/.
  */
 
 
 package it.unibo.cs.v2.server;
 
-import it.unibo.cs.v2.client.IsUsernameValid;
+import it.unibo.cs.v2.servlets.IsUsernameValid;
 
 import java.io.File;
 
@@ -60,7 +60,6 @@ public class IsUsernameValidImpl extends RemoteServiceServlet implements IsUsern
 			return true;
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			return false;
 		}
 	}

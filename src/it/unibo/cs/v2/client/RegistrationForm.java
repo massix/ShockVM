@@ -11,11 +11,16 @@
  * See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License 
- * along with Foobar. If not, see http://www.gnu.org/licenses/.
+ * along with Floz Configurator. If not, see http://www.gnu.org/licenses/.
  */
 
 
 package it.unibo.cs.v2.client;
+
+import it.unibo.cs.v2.servlets.IsUsernameValid;
+import it.unibo.cs.v2.servlets.IsUsernameValidAsync;
+import it.unibo.cs.v2.servlets.RegisterUser;
+import it.unibo.cs.v2.servlets.RegisterUserAsync;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,25 +41,19 @@ import com.google.gwt.user.client.ui.TextBox;
 
 
 public class RegistrationForm extends HTMLPanel implements ClickHandler, KeyUpHandler {
-	private final TextBox username;
-	private final TextBox displayname;
-	private final Button submitButton;
-	private final PasswordTextBox password;
-	private final FlexTable mainTable;
+	private final TextBox username = new TextBox();
+	private final TextBox displayname = new TextBox();
+	private final Button submitButton = new Button("Register");
+	private final PasswordTextBox password = new PasswordTextBox();
+	private final FlexTable mainTable = new FlexTable();
 	
 	private final IsUsernameValidAsync validProxy = (IsUsernameValidAsync) GWT.create(IsUsernameValid.class);
 	private final RegisterUserAsync registerProxy = (RegisterUserAsync) GWT.create(RegisterUser.class);
 	
-	private final HTML resultLabel;
+	private final HTML resultLabel = new HTML();
 	
 	public RegistrationForm() {
 		super("");
-		username = new TextBox();
-		displayname = new TextBox();
-		password = new PasswordTextBox();
-		submitButton = new Button("Submit");
-		resultLabel = new HTML();
-		mainTable = new FlexTable();
 		resultLabel.setVisible(false);
 		
 		mainTable.setWidget(0, 0, new HTML("Your (real) name"));

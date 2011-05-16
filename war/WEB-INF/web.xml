@@ -17,11 +17,6 @@
   </servlet>
   
   <servlet>
-  	<servlet-name>md5hash</servlet-name>
-  	<servlet-class>it.unibo.cs.v2.server.GetPasswordHashImpl</servlet-class>
-  </servlet>
-  
-  <servlet>
   	<servlet-name>usernamevalid</servlet-name>
   	<servlet-class>it.unibo.cs.v2.server.IsUsernameValidImpl</servlet-class>
   </servlet>
@@ -31,6 +26,42 @@
   	<servlet-class>it.unibo.cs.v2.server.RegisterUserImpl</servlet-class>
   </servlet>
   
+  <servlet>
+  	<servlet-name>getmachines</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.GetMachinesImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>getisolist</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.GetIsoListImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>testservlet</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.TestServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>createmachine</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.CreateMachineImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>deletemachine</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.DeleteMachineImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>startviewmachine</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.StartMachineImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>shutdownmachine</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.ShutdownMachineImpl</servlet-class>
+  </servlet>
+  
+  <!-- Mappings -->
   <servlet-mapping>
   	<servlet-name>user</servlet-name>
   	<url-pattern>/flozconfigurator/user</url-pattern>
@@ -39,11 +70,6 @@
   <servlet-mapping>
   	<servlet-name>userinfo</servlet-name>
   	<url-pattern>/flozconfigurator/userinfo</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-  	<servlet-name>md5hash</servlet-name>
-  	<url-pattern>/flozconfigurator/md5hash</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
@@ -56,9 +82,44 @@
   	<url-pattern>/flozconfigurator/registeruser</url-pattern>
   </servlet-mapping>
   
+  <servlet-mapping>
+  	<servlet-name>getmachines</servlet-name>
+  	<url-pattern>/flozconfigurator/getmachines</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>getisolist</servlet-name>
+  	<url-pattern>/flozconfigurator/getisolist</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>testservlet</servlet-name>
+  	<url-pattern>/flozconfigurator/testservlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>createmachine</servlet-name>
+  	<url-pattern>/flozconfigurator/createmachine</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>deletemachine</servlet-name>
+  	<url-pattern>/flozconfigurator/deletemachine</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>startviewmachine</servlet-name>
+  	<url-pattern>/flozconfigurator/startviewmachine</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>shutdownmachine</servlet-name>
+  	<url-pattern>/flozconfigurator/shutdownmachine</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>FlozConfigurator.html</welcome-file>
   </welcome-file-list>
-
+  
 </web-app>

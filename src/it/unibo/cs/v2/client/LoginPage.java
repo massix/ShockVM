@@ -11,14 +11,20 @@
  * See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License 
- * along with Foobar. If not, see http://www.gnu.org/licenses/.
+ * along with Floz Configurator. If not, see http://www.gnu.org/licenses/.
  */
 
 package it.unibo.cs.v2.client;
 
+import it.unibo.cs.v2.servlets.LoginUser;
+import it.unibo.cs.v2.servlets.LoginUserAsync;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Cookies;
@@ -31,29 +37,26 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class LoginPage extends HTMLPanel {
-	private TextBox userName;
-	private PasswordTextBox password;
-	private Button submitButton;
+public class LoginPage extends HTMLPanel implements ClickHandler, KeyDownHandler {
+	private TextBox userName = new TextBox();
+	private PasswordTextBox password = new PasswordTextBox();
+	private Button submitButton = new Button("Login");
 
 	private LoginUserAsync userProxy = (LoginUserAsync) GWT.create(LoginUser.class);	
 	
-	private HTML errorLabel;
+	private HTML errorLabel = new HTML();
 	
-	private DisclosurePanel disclosure;
+	private DisclosurePanel disclosure = new DisclosurePanel("Register a new user");
+	
+	private AsyncCallback<Boolean> callback;
 	
 	public LoginPage() {
 		super("");
 
 		FlexTable mainTable = new FlexTable();
-		errorLabel = new HTML();
 		errorLabel.setVisible(false);
 		errorLabel.getElement().getStyle().setColor("red");
 		
-		userName = new TextBox();
-		password = new PasswordTextBox();
-		
-		disclosure = new DisclosurePanel("Register a new user");
 		disclosure.setContent(new RegistrationForm());
 		
 		if (Cookies.getCookie("login") != null) {
@@ -63,8 +66,6 @@ public class LoginPage extends HTMLPanel {
 		else
 			userName.setFocus(true);
 		
-		submitButton = new Button("Submit");
-
 		mainTable.clear();
 
 		/* First row */
@@ -90,17 +91,15 @@ public class LoginPage extends HTMLPanel {
 				((RegistrationForm) disclosure.getContent()).hideLabel();
 			}
 		});
-	}
-
-	public void setAsyncCallback(final AsyncCallback<Boolean> callback) {
-		submitButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				userProxy.loginUser(userName.getText(), password.getText(), callback);
-			}
-		});
+		
+		submitButton.addClickHandler(this);
+		password.addKeyDownHandler(this);
 	}
 	
+	public final void setAsyncCallback(AsyncCallback<Boolean> callback) {
+		this.callback = callback;
+	}
+
 	public void showError(String error)	{
 		errorLabel.setHTML(error);
 		errorLabel.setVisible(true);
@@ -116,5 +115,16 @@ public class LoginPage extends HTMLPanel {
 
 	public String getProvidedPassword() {
 		return password.getText();
+	}
+
+	@Override
+	public void onKeyDown(KeyDownEvent event) {
+		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+			userProxy.loginUser(userName.getText(), password.getText(), callback);
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		userProxy.loginUser(userName.getText(), password.getText(), callback);
 	}
 }

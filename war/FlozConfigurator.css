@@ -58,5 +58,10 @@ div#footer {
 
 #mainPanel {
 	margin-left: 2em;
-	margin-right: 2em;
+}
+
+.bottomlimited {
+	width: 100%;
+	border-bottom: 2px solid #ccc;
+	margin-bottom: 2em;
 }

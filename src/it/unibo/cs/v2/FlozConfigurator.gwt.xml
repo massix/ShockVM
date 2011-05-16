@@ -16,6 +16,7 @@
   <entry-point class='it.unibo.cs.v2.client.FlozConfigurator'/>
 
   <!-- Specify the paths for translatable code                    -->
+  <source path='servlets'/>
   <source path='client'/>
   <source path='shared'/>
 

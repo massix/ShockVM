@@ -11,13 +11,13 @@
  * See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License 
- * along with Foobar. If not, see http://www.gnu.org/licenses/.
+ * along with Floz Configurator. If not, see http://www.gnu.org/licenses/.
  */
 
 
 package it.unibo.cs.v2.server;
 
-import it.unibo.cs.v2.client.RegisterUser;
+import it.unibo.cs.v2.servlets.RegisterUser;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,7 +98,8 @@ public class RegisterUserImpl extends RemoteServiceServlet implements RegisterUs
 			
 			if (usersDir.exists() && usersDir.isDirectory()) {
 				usersDir = new File(getServletContext().getRealPath("users/" + username));
-				usersDir.mkdir();
+				if (!usersDir.exists())
+					usersDir.mkdir();
 			}
 			
 			else
