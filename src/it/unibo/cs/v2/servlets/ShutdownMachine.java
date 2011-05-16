@@ -23,5 +23,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("shutdownmachine")
 public interface ShutdownMachine extends RemoteService {
-	public boolean shutdownMachine(MachineProcessInfo machineProcess);
+	public void shutdownMachine(MachineProcessInfo machineProcess) throws Exception;
 }

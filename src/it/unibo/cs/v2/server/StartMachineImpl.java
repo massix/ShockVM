@@ -107,7 +107,8 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		mp.setVncServer(new Integer(freeVnc));
 		mp.setPid(0);
 		
-		String kvmCommand = "kvm -cdrom " + machineInfo.getIso();
+//		String kvmCommand = "kvm -cdrom " + machineInfo.getIso();
+		String kvmCommand = "qemu -cdrom " + machineInfo.getIso();
 		kvmCommand += " -hda " + machineInfo.getHda();
 		
 		if (machineInfo.isHdbEnabled())
@@ -123,8 +124,10 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		}
 		
 		kvmCommand += " -nographic -vnc :" + freeVnc;
-		kvmCommand += " -enable-kvm -vga vmware -usbdevice tablet &\n\n";
-		String pgrepCommand = "pgrep -nu tomcat6 kvm > .temp\n\n";
+//		kvmCommand += " -enable-kvm -vga vmware -usbdevice tablet &\n\n";
+		kvmCommand += "&\n\n";
+//		String pgrepCommand = "pgrep -nu tomcat6 kvm > .temp\n\n";
+		String pgrepCommand = "pgrep -nu tomcat6 qemu > .temp\n\n";
 		
 		FileWriter startupWriter = new FileWriter(startup);
 		startupWriter.write("#!/bin/sh\n\n");
@@ -136,8 +139,8 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		if (!startup.canExecute())
 			startup.setExecutable(true, true);
 		
+		int pid = -1;
 		try {
-			int pid = -1;
 			ProcessBuilder execScript = new ProcessBuilder("/bin/sh", startup.getAbsolutePath());
 			execScript.directory(new File(home));
 			Process exec = execScript.start();
@@ -151,14 +154,17 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 				tempReader.close();
 				pidFile.delete();
 			}
-
+			
 			FileWriter activeMachinesWriter = new FileWriter(activeMachines, true);
 			activeMachinesWriter.write(machineInfo.getName() + "::" + pid + "::" + freeVnc + "\n");
 			activeMachinesWriter.close();
 			mp.setPid(pid);
+
+			
 		}
 		catch (IOException e) {
 			logger.log(e.getMessage());
+			throw e;
 		}
 
 		return mp;

@@ -21,5 +21,5 @@ import it.unibo.cs.v2.shared.MachineProcessInfo;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ShutdownMachineAsync {
-	void shutdownMachine(MachineProcessInfo machineProcess, AsyncCallback<Boolean> callback);
+	void shutdownMachine(MachineProcessInfo machineProcess, AsyncCallback<Void> callback);
 }

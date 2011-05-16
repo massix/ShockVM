@@ -99,11 +99,12 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				shutdownMachineProxy.shutdownMachine(mpi, new AsyncCallback<Boolean>() {
+				shutdownMachineProxy.shutdownMachine(mpi, new AsyncCallback<Void>() {
 					
 					@Override
-					public void onSuccess(Boolean result) {
-						Window.alert(result.toString());
+					public void onSuccess(Void result) {
+						vncApplet.setHTML("<span style=\"color: green\">Machine successfully shut down.</span>");
+						remove(shutdown);
 					}
 					
 					@Override
