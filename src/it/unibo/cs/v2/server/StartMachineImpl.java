@@ -111,8 +111,9 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		mp.setVncServer(new Integer(freeVnc));
 		mp.setPid(0);
 		
-//		String kvmCommand = "kvm -cdrom " + machineInfo.getIso();
-		String kvmCommand = "qemu -cdrom " + machineInfo.getIso();
+		String kvmCommand = "kvm -cdrom " + machineInfo.getIso();
+//		String kvmCommand = "qemu -cdrom " + machineInfo.getIso();
+		
 		kvmCommand += " -hda " + machineInfo.getHda();
 		
 		if (machineInfo.isHdbEnabled())
@@ -127,15 +128,19 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 			kvmCommand += " -net vde,vlan=0,sock=/tmp/virtua_switch";
 		}
 		
+		kvmCommand += " -boot " + (machineInfo.isBootCdrom()? "d" : "c");
+		
 		kvmCommand += " -nographic -vnc :" + freeVnc;
-//		kvmCommand += " -enable-kvm -vga vmware -usbdevice tablet &\n\n";
-		kvmCommand += "&\n\n";
-//		String pgrepCommand = "pgrep -nu tomcat6 kvm > .temp\n\n";
-		String pgrepCommand = "pgrep -nu tomcat6 qemu > .temp\n\n";
+		
+		kvmCommand += " -m 1024 -enable-kvm -vga std -usbdevice tablet";
+//		kvmCommand += "&\n\n";
+		
+		String pgrepCommand = "pgrep -nu tomcat6 -fx \"" + kvmCommand + "\" > .temp\n\n";
 		
 		FileWriter startupWriter = new FileWriter(startup);
 		startupWriter.write("#!/bin/sh\n\n");
-		startupWriter.write(kvmCommand);
+		startupWriter.write(kvmCommand + "&\n");
+		startupWriter.write("sleep 3\n");
 		startupWriter.write(pgrepCommand);
 		startupWriter.flush();
 		startupWriter.close();

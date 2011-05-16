@@ -42,6 +42,8 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -134,7 +136,17 @@ public class LeftPanel extends StackLayoutPanel {
 							machinePanel.add(new HTML("Network interface: " + machineInfo.getSocketPath() + " (" + mac + ")"));
 						}
 						
-						final HorizontalPanel buttonsPanel = new HorizontalPanel();
+						HorizontalPanel buttonsPanel = new HorizontalPanel();
+						final ListBox bootFrom = new ListBox();
+
+						machinePanel.add(new HTML("<br /><b>Boot from</b><br />"));
+
+						bootFrom.addItem("Hard Disk", "c");
+						bootFrom.addItem("CD-Rom", "d");
+						machinePanel.add(bootFrom);
+						machinePanel.add(buttonsPanel);
+						
+						
 						final Button startButton = new Button("Start/View machine");
 						final Button deleteButton = new Button("Delete machine");
 						
@@ -143,17 +155,24 @@ public class LeftPanel extends StackLayoutPanel {
 							
 							@Override
 							public void onClick(ClickEvent event) {
+								startButton.setEnabled(false);
+								machineInfo.setBootCdrom(bootFrom.getValue(bootFrom.getSelectedIndex()).equals("d"));
+								final Image loadingGif = new Image("/loading.gif");
+								machinePanel.add(loadingGif);
+								
 								startMachineProxy.startViewMachine(machineInfo, new AsyncCallback<MachineProcessInfo>() {
 
 									@Override
 									public void onFailure(Throwable caught) {
 										Window.alert(caught.getMessage());
-										
+										machinePanel.remove(loadingGif);
 									}
 
 									@Override
 									public void onSuccess(MachineProcessInfo result) {
 										MainPage.getInstance().showApplet(result);
+										startButton.setEnabled(true);
+										machinePanel.remove(loadingGif);
 									}
 								});
 							}

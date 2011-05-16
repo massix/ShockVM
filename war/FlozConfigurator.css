@@ -62,6 +62,5 @@ div#footer {
 
 .bottomlimited {
 	width: 100%;
-	border-bottom: 2px solid #ccc;
-	margin-bottom: 2em;
+	margin-bottom: 1em;
 }
