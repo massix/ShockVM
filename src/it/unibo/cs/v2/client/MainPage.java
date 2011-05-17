@@ -86,7 +86,9 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 
 	public void showApplet(final MachineProcessInfo mpi) {
 		clear();
+		
 		add(vncApplet);
+
 		vncApplet.setHTML("<h2>Viewing " + mpi.getMachineName() + " (" + mpi.getPid() + ")</h2><b>To shutdown this machine, freeing the VNC server," +
 				" please use the \"Shutdown this machine\" button positioned on the bottom of the page</b><br />" +
 				"<applet code=\"VncViewer.class\" archive=\"VncViewer.jar\" width=\"1024\" height=\"768\">" +

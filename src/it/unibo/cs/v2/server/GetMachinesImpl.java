@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -81,7 +82,16 @@ public class GetMachinesImpl extends RemoteServiceServlet implements
 					
 					got = (Element) root.getElementsByTagName("hdb").item(0);
 					machineInfo.setHdbEnabled(got.getAttribute("enabled").equals("true"));
-
+					
+					NodeList sharedWith = root.getElementsByTagName("share");
+					if (sharedWith != null && sharedWith.getLength() > 0) {
+						for (int i = 0; i < sharedWith.getLength(); i++) {
+							got = (Element) sharedWith.item(i);
+							machineInfo.addShare(got.getAttribute("login"));
+						}
+					}
+					
+					
 					if (machineInfo.isHdbEnabled()) {
 						machineInfo.setHdb(got.getAttribute("path"));
 						machineInfo.setHdbSize(got.getAttribute("size"));

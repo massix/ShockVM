@@ -37,7 +37,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -48,7 +47,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class LeftPanel extends StackLayoutPanel {
+public class MainPanel extends StackLayoutPanel {
 	private final int HEADERSIZE = 2;
 	
 	private final String WELCOME_STRING = "Welcome to <b>Live VirtuaCluster</b>. <br/>" +
@@ -65,13 +64,16 @@ public class LeftPanel extends StackLayoutPanel {
 	private final DeleteMachineAsync deleteMachineProxy = (DeleteMachineAsync) GWT.create(DeleteMachine.class);
 	private final StartMachineAsync startMachineProxy = (StartMachineAsync) GWT.create(StartMachine.class);
 	
-	public LeftPanel(HashMap<String, String> userInfo) {
+	public MainPanel(final HashMap<String, String> userInfo) {
 		super(Unit.EM);
 
+		final Anchor refresh = new Anchor("Refresh Machines' list");
+		
 		buildMachinesList();
 		
 		firstPanel.add(new HTML("<h2>Navigation Menu</h2>"));
 		firstPanel.add(new Hyperlink("HomePage", HistoryTokens.START));
+		firstPanel.add(refresh);
 		
 		firstPanel.add(new HTML("<h2>New machine</h2>"));
 		firstPanel.add(new Hyperlink("Create from scratch", HistoryTokens.NEWMACHINE));
@@ -91,30 +93,36 @@ public class LeftPanel extends StackLayoutPanel {
 		firstPanel.add(new HTML("&nbsp;&nbsp;the framework used for this webapp"));
 		
 		add(new ScrollPanel(firstPanel), userInfo.get("displayname"), HEADERSIZE);
-		add(new ScrollPanel(machines), "Your Machines", HEADERSIZE);
 		add(new ScrollPanel(serverNews), "Latest Infos", HEADERSIZE);
-	}
-	
-	private final void buildMachinesList() {
-		machines.clear();
-		final Button refresh = new Button("Refresh");
+		
 		refresh.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+//				if (getWidgetCount() > 2)
+//					for (int i = 1; i < (getWidgetCount()-1); i++)
+//						remove(i);
+//				
+				clear();
+				add(new ScrollPanel(firstPanel), userInfo.get("displayname"), HEADERSIZE);
+				add(new ScrollPanel(serverNews), "Latest Infos", HEADERSIZE);
 				buildMachinesList();
 			}
 		});
-		
-		machines.add(refresh);
+	}
+	
+	private final void buildMachinesList() {
+		machines.clear();
 
 		getMachinesProxy.getMachines(new AsyncCallback<LinkedList<MachineInfo>>() {
 			@Override
 			public void onSuccess(LinkedList<MachineInfo> result) {
 				if (result != null) {
 					for (final MachineInfo machineInfo : result) {
-						final DisclosurePanel disclosure = new DisclosurePanel(machineInfo.getName());
-						final HTMLPanel machinePanel = new HTMLPanel(machineInfo.getDescription() + "<br />");
+						final UsersSuggestBox newShare = new UsersSuggestBox();
+						final HTMLPanel machinePanel = new HTMLPanel("<b>Description</b><br />");
+						
+						machinePanel.add(new HTML(machineInfo.getDescription()));
 						
 						machinePanel.add(new HTML("<br /><b>Basic settings</b>"));
 						machinePanel.add(new HTML("Base system: " + machineInfo.getIso() + "<br />"));
@@ -136,6 +144,18 @@ public class LeftPanel extends StackLayoutPanel {
 							machinePanel.add(new HTML("Network interface: " + machineInfo.getSocketPath() + " (" + mac + ")"));
 						}
 						
+						machinePanel.add(new HTML("<br /><b>Shared with</b><br />"));
+						if (machineInfo.getTotalShare() < 1)
+							machinePanel.add(new HTML("This machine is feeling alone.<br />Share it with someone!"));
+						else {
+							machinePanel.add(new HTML("<ul>"));
+							for (String user : machineInfo.getShares())
+								machinePanel.add(new HTML("<li>" + user + "</li>"));
+							machinePanel.add(new HTML("</ul>"));
+						}
+						
+						machinePanel.add(newShare);
+									
 						HorizontalPanel buttonsPanel = new HorizontalPanel();
 						final ListBox bootFrom = new ListBox();
 
@@ -150,7 +170,6 @@ public class LeftPanel extends StackLayoutPanel {
 						final Button startButton = new Button("Start/View machine");
 						final Button deleteButton = new Button("Delete machine");
 						
-						// TODO: start machine
 						startButton.addClickHandler(new ClickHandler() {
 							
 							@Override
@@ -179,7 +198,6 @@ public class LeftPanel extends StackLayoutPanel {
 							}
 						});
 						
-						// TODO: delete machine
 						deleteButton.addClickHandler(new ClickHandler() {
 							
 							@Override
@@ -232,17 +250,7 @@ public class LeftPanel extends StackLayoutPanel {
 						
 						machinePanel.add(buttonsPanel);
 						
-						disclosure.setContent(machinePanel);
-						disclosure.setAnimationEnabled(true);
-						
-						disclosure.addStyleName("bottomlimited");
-						disclosure.getElement().getStyle().setMarginBottom(2, Unit.EM);
-						
-						machines.add(disclosure);
-						
-						machines.getElement().getStyle().setHeight(100, Unit.PCT);
-						machines.getElement().getStyle().setWidth(100, Unit.PCT);
-
+						insert(machinePanel, machineInfo.getName(), HEADERSIZE, getWidgetCount() - 1);
 					}
 				}
 			}

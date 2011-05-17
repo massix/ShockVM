@@ -16,10 +16,11 @@
 
 package it.unibo.cs.v2.shared;
 
+import java.util.LinkedList;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MachineInfo implements IsSerializable {
-	private String configFile;
 	private String iso;
 	private String name;
 	private String description;
@@ -33,6 +34,7 @@ public class MachineInfo implements IsSerializable {
 	private String macAddress;
 	private String socketPath;
 	private boolean bootCdrom;
+	private LinkedList<String> sharedWith = new LinkedList<String>();
 	
 	public void setName(String name) {
 		this.name = name;
@@ -114,14 +116,6 @@ public class MachineInfo implements IsSerializable {
 		return socketPath;
 	}
 
-	public void setConfigFile(String configFile) {
-		this.configFile = configFile;
-	}
-
-	public String getConfigFile() {
-		return configFile;
-	}
-
 	public void setIso(String iso) {
 		this.iso = iso;
 	}
@@ -144,5 +138,25 @@ public class MachineInfo implements IsSerializable {
 
 	public boolean isBootCdrom() {
 		return bootCdrom;
+	}
+	
+	public void addShare(String user) {
+		if (!sharedWith.contains(user))
+			sharedWith.add(user);
+	}
+	
+	public void removeShare(String user) {
+		if (sharedWith.contains(user))
+			sharedWith.remove(user);
+	}
+	
+	public String[] getShares() {
+		String[] ret = new String[sharedWith.size()];
+		ret = (String[]) sharedWith.toArray();
+		return ret;
+	}
+	
+	public int getTotalShare() {
+		return sharedWith.size();
 	}
 }

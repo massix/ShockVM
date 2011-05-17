@@ -59,7 +59,7 @@ public class FlozConfigurator extends DockLayoutPanel implements EntryPoint {
 	 * It's nice to keep'em in memory for low-costs accesses
 	 */
 	private MainPage mainPage;
-	private LeftPanel leftPanel;
+	private MainPanel leftPanel;
 	
 	/**
 	 * Points to the widget that is set in the center of the DockLayoutPanel
@@ -146,7 +146,7 @@ public class FlozConfigurator extends DockLayoutPanel implements EntryPoint {
 		mainPage = MainPage.getInstance();
 		mainPage.getElement().getStyle().setMarginRight(3, Unit.EM);
 		History.addValueChangeHandler(mainPage);
-		leftPanel = new LeftPanel(userInfo);
+		leftPanel = new MainPanel(userInfo);
 		addEast(leftPanel, 23);
 		add(new ScrollPanel(mainPage));
 
