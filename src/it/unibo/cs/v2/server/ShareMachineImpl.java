@@ -7,6 +7,7 @@ import java.util.Date;
 
 import it.unibo.cs.v2.servlets.ShareMachine;
 import it.unibo.cs.v2.shared.MachineInfo;
+import it.unibo.cs.v2.shared.NotificationType;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -47,11 +48,27 @@ public class ShareMachineImpl extends RemoteServiceServlet implements ShareMachi
 		File newNotification = new File(destDir.getAbsolutePath() + "/notification-" + today.getTime());
 		newNotification.createNewFile();
 		
+		// Write out the notification
 		BufferedWriter notificationWriter = new BufferedWriter(new FileWriter(newNotification));
-		notificationWriter.write("Sender: " + login);
+
+		// First line is the notification type
+		notificationWriter.write(NotificationType.SHAREMACHINE.toString());
 		notificationWriter.newLine();
-		notificationWriter.write("Message: wanna share this machine?");
+		
+		// Second line is the sender
+		notificationWriter.write(login);
 		notificationWriter.newLine();
+
+		// Third line is the Object of the notification (machineName in this case)
+		notificationWriter.write(machine.getName());
+		notificationWriter.newLine();
+
+		notificationWriter.write("User " + login + " wants to share the following machine with you.<br />");
+		notificationWriter.write("<b>Name</b>: " + machine.getName() + "<br />");
+		notificationWriter.write("<b>Description</b>: " + machine.getDescription() + "<br />");
+		notificationWriter.write("<b>VirtuaCluster " + (machine.isVirtuacluster()? "enabled" : "disabled") + "</b><br />");
+		notificationWriter.newLine();
+		
 		notificationWriter.flush();
 		notificationWriter.close();
 		

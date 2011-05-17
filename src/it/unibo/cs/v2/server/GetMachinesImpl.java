@@ -76,6 +76,14 @@ public class GetMachinesImpl extends RemoteServiceServlet implements
 					got = (Element) root.getElementsByTagName("iso").item(0);
 					machineInfo.setIso(got.getAttribute("path"));
 					
+					if (root.getElementsByTagName("realowner").getLength() > 0) {
+						got = (Element) root.getElementsByTagName("realowner").item(0);
+						machineInfo.setRealOwner(got.getTextContent());
+					}
+					
+					else
+						machineInfo.setRealOwner(username);
+					
 					got = (Element) root.getElementsByTagName("hda").item(0);
 					machineInfo.setHda(got.getAttribute("path"));
 					machineInfo.setHdaSize(got.getAttribute("size"));

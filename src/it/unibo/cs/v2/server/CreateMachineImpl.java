@@ -41,6 +41,11 @@ public class CreateMachineImpl extends RemoteServiceServlet implements CreateMac
 	@Override
 	public boolean createMachine(MachineInfo machineInfo) throws IOException {
 		String userHome = (String) getThreadLocalRequest().getSession().getAttribute("home");
+		String login = (String) getThreadLocalRequest().getSession().getAttribute("login");
+		
+		if (userHome.equals("") || login.equals(""))
+			throw new IOException("Session expired");
+		
 		VirtuaLogger logger = new VirtuaLogger(userHome, this.getClass().toString());
 		
 		File machineFile = new File(userHome + "/" + machineInfo.getName().replace(' ', '_') + ".xml");
@@ -68,6 +73,10 @@ public class CreateMachineImpl extends RemoteServiceServlet implements CreateMac
 			
 			newElem = doc.createElement("iso");
 			newElem.setAttribute("path", machineInfo.getIso());
+			root.appendChild(newElem);
+			
+			newElem = doc.createElement("realowner");
+			newElem.setTextContent(login);
 			root.appendChild(newElem);
 			
 			newElem = doc.createElement("hda");

@@ -34,7 +34,9 @@ public class MachineInfo implements IsSerializable {
 	private String macAddress;
 	private String socketPath;
 	private boolean bootCdrom;
+	private String realOwner;
 	private LinkedList<String> sharedWith = new LinkedList<String>();
+	private LinkedList<String> pendingShares = new LinkedList<String>();
 	
 	public void setName(String name) {
 		this.name = name;
@@ -156,7 +158,31 @@ public class MachineInfo implements IsSerializable {
 		return ret;
 	}
 	
+	public void addPendingShare(String user) {
+		if (!pendingShares.contains(user))
+			pendingShares.add(user);
+	}
+	
+	public void removePendingShare(String user) {
+		if (pendingShares.contains(user))
+			pendingShares.remove(user);
+	}
+	
+	public String[] getPendingShares() {
+		String[] ret = new String[pendingShares.size()];
+		ret = (String[]) pendingShares.toArray();
+		return ret;
+	}
+	
 	public int getTotalShare() {
 		return sharedWith.size();
+	}
+
+	public void setRealOwner(String realOwner) {
+		this.realOwner = realOwner;
+	}
+
+	public String getRealOwner() {
+		return realOwner;
 	}
 }

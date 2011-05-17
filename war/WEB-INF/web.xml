@@ -71,6 +71,11 @@
   	<servlet-class>it.unibo.cs.v2.server.ShareMachineImpl</servlet-class>
   </servlet>
   
+  <servlet>
+  	<servlet-name>getnotifications</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.GetNotificationsImpl</servlet-class>
+  </servlet>
+  
   <!-- Mappings -->
   <servlet-mapping>
   	<servlet-name>user</servlet-name>
@@ -135,6 +140,11 @@
   <servlet-mapping>
   	<servlet-name>sharemachine</servlet-name>
   	<url-pattern>/flozconfigurator/sharemachine</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>getnotifications</servlet-name>
+  	<url-pattern>/flozconfigurator/getnotifications</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
