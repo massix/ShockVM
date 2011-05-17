@@ -99,10 +99,6 @@ public class MainPanel extends StackLayoutPanel {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-//				if (getWidgetCount() > 2)
-//					for (int i = 1; i < (getWidgetCount()-1); i++)
-//						remove(i);
-//				
 				clear();
 				add(new ScrollPanel(firstPanel), userInfo.get("displayname"), HEADERSIZE);
 				add(new ScrollPanel(serverNews), "Latest Infos", HEADERSIZE);
@@ -162,7 +158,6 @@ public class MainPanel extends StackLayoutPanel {
 							public void onClick(ClickEvent event) {
 								if (newShare.getText().equals(""))
 									return;
-								
 							}
 						});
 						
