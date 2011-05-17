@@ -18,6 +18,8 @@ package it.unibo.cs.v2.client;
 
 import it.unibo.cs.v2.servlets.DeleteMachine;
 import it.unibo.cs.v2.servlets.DeleteMachineAsync;
+import it.unibo.cs.v2.servlets.ShareMachine;
+import it.unibo.cs.v2.servlets.ShareMachineAsync;
 import it.unibo.cs.v2.servlets.StartMachine;
 import it.unibo.cs.v2.servlets.StartMachineAsync;
 import it.unibo.cs.v2.shared.MachineInfo;
@@ -36,6 +38,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 
+// TODO implement a timer that checks the server to see if the machine has changed in some way (new
+// accepted share?)
+
 public class MachinePanel extends HTMLPanel {
 	private final MachineInfo machineInfo;
 	
@@ -47,7 +52,7 @@ public class MachinePanel extends HTMLPanel {
 	private final HTML virtuaClusterHTML;
 	private final HTML secondNetworkHTML;
 	private final HTML workingSharesHTML;
-	private final HTML pendingSharesHTML;
+	private final HTML pendingSharesHTML = new HTML();
 	private final HTML newLine = new HTML("<br />");
 	
 	// Share items
@@ -65,6 +70,26 @@ public class MachinePanel extends HTMLPanel {
 	// Proxies
 	private final StartMachineAsync startMachineProxy = GWT.create(StartMachine.class);
 	private final DeleteMachineAsync deleteMachineProxy = GWT.create(DeleteMachine.class);
+	private final ShareMachineAsync shareMachineProxy = GWT.create(ShareMachine.class);
+	
+	// AsyncCallback for addShareButton
+	private final AsyncCallback<Boolean> addShareCallback = new AsyncCallback<Boolean>() {
+
+		@Override
+		public void onFailure(Throwable caught) {
+			Window.alert(caught.getMessage());
+		}
+
+		@Override
+		public void onSuccess(Boolean result) {
+			if (result) {
+				machineInfo.addPendingShare(usersBox.getText());
+				usersBox.setText("");
+				refreshPendingShares();
+				// TODO save machine status on the server
+			}
+		}
+	};
 	
 	// Handler for startButton
 	private final ClickHandler startButtonClickHandler = new ClickHandler() {
@@ -96,6 +121,7 @@ public class MachinePanel extends HTMLPanel {
 	};
 	
 	// Handler for deleteButton
+	// TODO handle this event in a cleaner way
 	private final ClickHandler deleteButtonClickHandler = new ClickHandler() {
 		
 		@Override
@@ -148,7 +174,18 @@ public class MachinePanel extends HTMLPanel {
 
 		@Override
 		public void onClick(ClickEvent event) {
+			if (usersBox.getText().equals(""))
+				return;
 			
+			else if (machineInfo.getPendingShares().length > 0) {
+				for (String user : machineInfo.getPendingShares())
+					if (user.equals(usersBox.getText())) {
+						usersBox.setText("");
+						return;
+					}
+			}
+			
+			shareMachineProxy.shareMachine(machineInfo, usersBox.getText(), addShareCallback);
 		}
 		
 	};
@@ -179,16 +216,7 @@ public class MachinePanel extends HTMLPanel {
 		
 		// get the shares
 		if (belongs) {
-			if (machineInfo.getPendingShares().length < 1)
-				pendingSharesHTML = new HTML("&nbsp;&nbsp;No pending shares");
-			
-			else {
-				String[] shares = machineInfo.getPendingShares();
-				String html = "";
-				for (String s : shares)
-					html += "&nbsp;&nbsp;" + s + " (pending)<br />";
-				pendingSharesHTML = new HTML(html);
-			}
+			refreshPendingShares();
 			
 			if (machineInfo.getShares().length < 1)
 				workingSharesHTML = new HTML("&nbsp;&nbsp;No accepted shares");
@@ -203,8 +231,8 @@ public class MachinePanel extends HTMLPanel {
 		}
 		
 		else {
-			pendingSharesHTML = new HTML();
-			workingSharesHTML = new HTML("This machine belongs to: " + machineInfo.getRealOwner());
+			pendingSharesHTML.setHTML("");
+			workingSharesHTML = new HTML("&nbsp;&nbsp;This machine belongs to: " + machineInfo.getRealOwner());
 		}
 		
 		// Build up the HTML
@@ -245,5 +273,17 @@ public class MachinePanel extends HTMLPanel {
 		add(startDeletePanel);
 	}
 	
+	private void refreshPendingShares() {
+		if (machineInfo.getPendingShares().length < 1)
+			pendingSharesHTML.setHTML("&nbsp;&nbsp;No pending shares");
+		
+		else {
+			String[] shares = machineInfo.getPendingShares();
+			String html = "";
+			for (String s : shares)
+				html += "&nbsp;&nbsp;<i>" + s + "</i> (pending)<br />";
+			pendingSharesHTML.setHTML(html);
+		}
+	}
 }
 
