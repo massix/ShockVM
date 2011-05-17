@@ -21,6 +21,8 @@ import it.unibo.cs.v2.servlets.DeleteMachine;
 import it.unibo.cs.v2.servlets.DeleteMachineAsync;
 import it.unibo.cs.v2.servlets.GetMachines;
 import it.unibo.cs.v2.servlets.GetMachinesAsync;
+import it.unibo.cs.v2.servlets.ShareMachine;
+import it.unibo.cs.v2.servlets.ShareMachineAsync;
 import it.unibo.cs.v2.servlets.StartMachine;
 import it.unibo.cs.v2.servlets.StartMachineAsync;
 import it.unibo.cs.v2.shared.MachineInfo;
@@ -63,6 +65,7 @@ public class MainPanel extends StackLayoutPanel {
 	private final GetMachinesAsync getMachinesProxy = (GetMachinesAsync) GWT.create(GetMachines.class);
 	private final DeleteMachineAsync deleteMachineProxy = (DeleteMachineAsync) GWT.create(DeleteMachine.class);
 	private final StartMachineAsync startMachineProxy = (StartMachineAsync) GWT.create(StartMachine.class);
+	private final ShareMachineAsync shareMachineProxy = (ShareMachineAsync) GWT.create(ShareMachine.class);
 	
 	public MainPanel(final HashMap<String, String> userInfo) {
 		super(Unit.EM);
@@ -158,6 +161,21 @@ public class MainPanel extends StackLayoutPanel {
 							public void onClick(ClickEvent event) {
 								if (newShare.getText().equals(""))
 									return;
+								
+								Window.alert(newShare.getText());
+								
+								shareMachineProxy.shareMachine(machineInfo, newShare.getText(), new AsyncCallback<Boolean>() {
+
+									@Override
+									public void onFailure(Throwable caught) {
+										Window.alert(caught.getMessage());
+									}
+
+									@Override
+									public void onSuccess(Boolean result) {
+										Window.alert(result.toString());
+									}
+								});
 							}
 						});
 						

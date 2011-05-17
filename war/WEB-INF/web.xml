@@ -66,6 +66,11 @@
   	<servlet-class>it.unibo.cs.v2.server.GetUsersListImpl</servlet-class>
   </servlet>
   
+  <servlet>
+  	<servlet-name>sharemachine</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.ShareMachineImpl</servlet-class>
+  </servlet>
+  
   <!-- Mappings -->
   <servlet-mapping>
   	<servlet-name>user</servlet-name>
@@ -125,6 +130,11 @@
   <servlet-mapping>
   	<servlet-name>getuserslist</servlet-name>
   	<url-pattern>/flozconfigurator/getuserslist</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>sharemachine</servlet-name>
+  	<url-pattern>/flozconfigurator/sharemachine</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
