@@ -154,7 +154,9 @@ public class MachineInfo implements IsSerializable {
 	
 	public String[] getShares() {
 		String[] ret = new String[sharedWith.size()];
-		ret = (String[]) sharedWith.toArray();
+		for (int i = 0; i < sharedWith.size(); i++) 
+			ret[i] = sharedWith.get(i);
+		
 		return ret;
 	}
 	
@@ -170,12 +172,14 @@ public class MachineInfo implements IsSerializable {
 	
 	public String[] getPendingShares() {
 		String[] ret = new String[pendingShares.size()];
-		ret = (String[]) pendingShares.toArray();
+		for (int i = 0; i < pendingShares.size(); i++)
+			ret[i] = pendingShares.get(i);
+		
 		return ret;
 	}
 	
 	public int getTotalShare() {
-		return sharedWith.size();
+		return sharedWith.size() + pendingShares.size();
 	}
 
 	public void setRealOwner(String realOwner) {
