@@ -155,6 +155,18 @@ public class MainPanel extends StackLayoutPanel {
 						}
 						
 						machinePanel.add(newShare);
+						final Anchor add = new Anchor("Add");
+						add.addClickHandler(new ClickHandler() {
+							
+							@Override
+							public void onClick(ClickEvent event) {
+								if (newShare.getText().equals(""))
+									return;
+								
+							}
+						});
+						
+						machinePanel.add(add);
 									
 						HorizontalPanel buttonsPanel = new HorizontalPanel();
 						final ListBox bootFrom = new ListBox();

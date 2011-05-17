@@ -16,17 +16,62 @@
 
 package it.unibo.cs.v2.client;
 
+import it.unibo.cs.v2.servlets.GetUsersList;
+import it.unibo.cs.v2.servlets.GetUsersListAsync;
+
+import java.util.LinkedList;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 
-public class UsersSuggestBox extends SuggestBox {
+public class UsersSuggestBox extends SuggestBox implements ValueChangeHandler<String> {
+	private final MultiWordSuggestOracle oracle;
+	private LinkedList<String> usersList;
+	private final Timer updateListTimer = new Timer() {
 
-	private MultiWordSuggestOracle oracle;;
+		@Override
+		public void run() {
+			doUpdate();
+		}
+	};
+	
+	private final GetUsersListAsync getUsersListProxy = (GetUsersListAsync) GWT.create(GetUsersList.class);
 	
 	
 	public UsersSuggestBox() {
 		oracle = (MultiWordSuggestOracle) getSuggestOracle();
-		oracle.add("test");
+		addValueChangeHandler(this);
+		
+		// Update every ten seconds
+		updateListTimer.scheduleRepeating(10000);
+	}
+
+	private void doUpdate() {
+		getUsersListProxy.getUsersList(new AsyncCallback<LinkedList<String>>() {
+			
+			@Override
+			public void onSuccess(LinkedList<String> result) {
+				usersList = result;
+				oracle.addAll(usersList);
+			}			
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				usersList = new LinkedList<String>();
+				
+			}
+		});
+		
 	}
 	
+	@Override
+	public void onValueChange(ValueChangeEvent<String> event) {
+		if (!usersList.contains(event))
+			setText("");
+	}
 }

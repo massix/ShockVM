@@ -61,6 +61,11 @@
   	<servlet-class>it.unibo.cs.v2.server.ShutdownMachineImpl</servlet-class>
   </servlet>
   
+  <servlet>
+  	<servlet-name>getuserslist</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.GetUsersListImpl</servlet-class>
+  </servlet>
+  
   <!-- Mappings -->
   <servlet-mapping>
   	<servlet-name>user</servlet-name>
@@ -115,6 +120,11 @@
   <servlet-mapping>
   	<servlet-name>shutdownmachine</servlet-name>
   	<url-pattern>/flozconfigurator/shutdownmachine</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>getuserslist</servlet-name>
+  	<url-pattern>/flozconfigurator/getuserslist</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
