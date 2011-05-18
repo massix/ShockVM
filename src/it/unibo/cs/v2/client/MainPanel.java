@@ -182,7 +182,7 @@ public class MainPanel extends StackLayoutPanel {
 							container.add(refuse);
 							
 							accept.addClickHandler(new ClickHandler() {
-								
+
 								@Override
 								public void onClick(ClickEvent event) {
 									acceptShareProxy.acceptShare(n, new AsyncCallback<Boolean>() {

@@ -61,7 +61,7 @@ public class GetIsoListImpl extends RemoteServiceServlet implements GetIsoList {
 				imageHM.put("version", version.getTextContent());
 				imageHM.put("description", description.getTextContent());
 				imageHM.put("web", web.getTextContent());
-				imageHM.put("iso", getServletContext().getRealPath(iso.getAttribute("path")));
+				imageHM.put("iso", iso.getAttribute("path"));
 
 				ret.add(imageHM);
 			}

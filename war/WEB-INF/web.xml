@@ -81,6 +81,11 @@
   	<servlet-class>it.unibo.cs.v2.server.AcceptShareImpl</servlet-class>
   </servlet>
   
+  <servlet>
+  	<servlet-name>removeshare</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.RemoveShareImpl</servlet-class>
+  </servlet>
+  
   <!-- Mappings -->
   <servlet-mapping>
   	<servlet-name>user</servlet-name>
@@ -155,6 +160,11 @@
   <servlet-mapping>
   	<servlet-name>acceptshare</servlet-name>
   	<url-pattern>/flozconfigurator/acceptshare</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>removeshare</servlet-name>
+  	<url-pattern>/flozconfigurator/removeshare</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

@@ -18,6 +18,8 @@ package it.unibo.cs.v2.client;
 
 import it.unibo.cs.v2.servlets.DeleteMachine;
 import it.unibo.cs.v2.servlets.DeleteMachineAsync;
+import it.unibo.cs.v2.servlets.RemoveShare;
+import it.unibo.cs.v2.servlets.RemoveShareAsync;
 import it.unibo.cs.v2.servlets.ShareMachine;
 import it.unibo.cs.v2.servlets.ShareMachineAsync;
 import it.unibo.cs.v2.servlets.StartMachine;
@@ -73,6 +75,7 @@ public class MachinePanel extends HTMLPanel {
 	private final StartMachineAsync startMachineProxy = GWT.create(StartMachine.class);
 	private final DeleteMachineAsync deleteMachineProxy = GWT.create(DeleteMachine.class);
 	private final ShareMachineAsync shareMachineProxy = GWT.create(ShareMachine.class);
+	private final RemoveShareAsync removeShareProxy = GWT.create(RemoveShare.class);
 	
 	// AsyncCallback for addShareButton
 	private final AsyncCallback<Boolean> addShareCallback = new AsyncCallback<Boolean>() {
@@ -202,7 +205,7 @@ public class MachinePanel extends HTMLPanel {
 		
 	};
 
-	public MachinePanel(MachineInfo machineInfo, boolean belongs) {
+	public MachinePanel(final MachineInfo machineInfo, boolean belongs) {
 		super("<b>Description</b>");
 		this.machineInfo = machineInfo;
 		
@@ -240,17 +243,39 @@ public class MachinePanel extends HTMLPanel {
 				int row = 0;
 				
 				for (final String s : shares) {
-					Anchor removeShare = new Anchor("Remove");
-
+					final Anchor removeShare = new Anchor("Remove");
+					final int currentRow = row;
+					
 					removeShare.addClickHandler(new ClickHandler() {
 						
 						@Override
 						public void onClick(ClickEvent event) {
-							Window.alert("Removing share " + s);
+							final Image loadingGif = new Image("loading.gif");
+							
+							((FlexTable) workingSharesHTML).remove(removeShare);
+							((FlexTable) workingSharesHTML).setWidget(currentRow, 1, loadingGif);
+							
+							removeShareProxy.removeShare(machineInfo, s, new AsyncCallback<Boolean>() {
+
+								@Override
+								public void onFailure(Throwable caught) {
+									Window.alert(caught.getMessage());
+								}
+
+								@Override
+								public void onSuccess(Boolean result) {
+									if (result) {
+										Window.alert("Share with " + s + " successfully removed. Refresh the machines' list to see the changes.");
+										((FlexTable) workingSharesHTML).remove(loadingGif);
+										((FlexTable) workingSharesHTML).setWidget(currentRow, 1, new HTML("<b>No longer sharing</b>"));
+										
+									}
+								}
+							});
 						}
 					});
 					
-					((FlexTable) workingSharesHTML).setWidget(row, 0, new HTML(s));
+					((FlexTable) workingSharesHTML).setWidget(row, 0, new HTML(s + "&nbsp;&nbsp;"));
 					((FlexTable) workingSharesHTML).setWidget(row, 1, removeShare);
 				
 					row++;
