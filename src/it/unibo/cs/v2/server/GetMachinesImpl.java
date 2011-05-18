@@ -66,6 +66,8 @@ public class GetMachinesImpl extends RemoteServiceServlet implements
 					Document machine = db.parse(f);
 					Element root = (Element) machine.getElementsByTagName("VirtualMachine").item(0);
 					
+					machineInfo.setConfigurationFile(f.getAbsolutePath());
+					
 					Element got = (Element)	root.getElementsByTagName("name").item(0);
 					machines.add(machineInfo);
 					machineInfo.setName(got.getTextContent());
@@ -91,19 +93,22 @@ public class GetMachinesImpl extends RemoteServiceServlet implements
 					got = (Element) root.getElementsByTagName("hdb").item(0);
 					machineInfo.setHdbEnabled(got.getAttribute("enabled").equals("true"));
 					
-					NodeList sharedWith = root.getElementsByTagName("share");
-					if (sharedWith != null && sharedWith.getLength() > 0) {
-						for (int i = 0; i < sharedWith.getLength(); i++) {
-							got = (Element) sharedWith.item(i);
-							machineInfo.addShare(got.getAttribute("login"));
-						}
-					}
-					
-					
 					if (machineInfo.isHdbEnabled()) {
 						machineInfo.setHdb(got.getAttribute("path"));
 						machineInfo.setHdbSize(got.getAttribute("size"));
 					}
+					
+					NodeList sharedWith = root.getElementsByTagName("share");
+					if (sharedWith != null && sharedWith.getLength() > 0) {
+						for (int i = 0; i < sharedWith.getLength(); i++) {
+							got = (Element) sharedWith.item(i);
+							if (got.getAttribute("status").equals("pending"))
+								machineInfo.addPendingShare(got.getAttribute("user"));
+							else
+								machineInfo.addShare(got.getAttribute("user"));
+						}
+					}
+
 					
 					got = (Element) root.getElementsByTagName("virtuacluster").item(0);
 					machineInfo.setVirtuacluster(got.getAttribute("enabled").equals("true"));

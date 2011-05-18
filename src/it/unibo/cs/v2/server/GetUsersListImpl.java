@@ -43,7 +43,8 @@ public class GetUsersListImpl extends RemoteServiceServlet implements GetUsersLi
 			try {
 				updateList();
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.err.println("Terminating timer due to " + e.getMessage());
+				updateListTimer.cancel();
 			}
 		}
 	};

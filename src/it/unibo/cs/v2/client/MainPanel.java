@@ -17,18 +17,13 @@
 
 package it.unibo.cs.v2.client;
 
-import it.unibo.cs.v2.servlets.DeleteMachine;
-import it.unibo.cs.v2.servlets.DeleteMachineAsync;
+import it.unibo.cs.v2.servlets.AcceptShare;
+import it.unibo.cs.v2.servlets.AcceptShareAsync;
 import it.unibo.cs.v2.servlets.GetMachines;
 import it.unibo.cs.v2.servlets.GetMachinesAsync;
 import it.unibo.cs.v2.servlets.GetNotifications;
 import it.unibo.cs.v2.servlets.GetNotificationsAsync;
-import it.unibo.cs.v2.servlets.ShareMachine;
-import it.unibo.cs.v2.servlets.ShareMachineAsync;
-import it.unibo.cs.v2.servlets.StartMachine;
-import it.unibo.cs.v2.servlets.StartMachineAsync;
 import it.unibo.cs.v2.shared.MachineInfo;
-import it.unibo.cs.v2.shared.MachineProcessInfo;
 import it.unibo.cs.v2.shared.Notification;
 import it.unibo.cs.v2.shared.ShareMachineNotification;
 
@@ -48,11 +43,8 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 public class MainPanel extends StackLayoutPanel {
 	private final int HEADERSIZE = 2;
@@ -82,10 +74,8 @@ public class MainPanel extends StackLayoutPanel {
 	private final HashMap<String, String> userInfo;
 
 	private final GetMachinesAsync getMachinesProxy = (GetMachinesAsync) GWT.create(GetMachines.class);
-	private final DeleteMachineAsync deleteMachineProxy = (DeleteMachineAsync) GWT.create(DeleteMachine.class);
-	private final StartMachineAsync startMachineProxy = (StartMachineAsync) GWT.create(StartMachine.class);
-	private final ShareMachineAsync shareMachineProxy = (ShareMachineAsync) GWT.create(ShareMachine.class);
 	private final GetNotificationsAsync getNotificationsProxy = (GetNotificationsAsync) GWT.create(GetNotifications.class);
+	private final AcceptShareAsync acceptShareProxy = (AcceptShareAsync) GWT.create(AcceptShare.class);
 	
 	public MainPanel(final HashMap<String, String> userInfo) {
 		super(Unit.EM);
@@ -118,7 +108,7 @@ public class MainPanel extends StackLayoutPanel {
 		firstPanel.add(new HTML("&nbsp;&nbsp;the framework used for this webapp"));
 		
 		add(new ScrollPanel(firstPanel), userInfo.get("displayname"), HEADERSIZE);
-		add(new ScrollPanel(notificationsPanel), "Notifications", HEADERSIZE);
+		add(new ScrollPanel(notificationsPanel), "Sharing requests", HEADERSIZE);
 		
 		refresh.addClickHandler(new ClickHandler() {
 			
@@ -126,7 +116,7 @@ public class MainPanel extends StackLayoutPanel {
 			public void onClick(ClickEvent event) {
 				clear();
 				add(new ScrollPanel(firstPanel), userInfo.get("displayname"), HEADERSIZE);
-				add(new ScrollPanel(notificationsPanel), "Notifications", HEADERSIZE);
+				add(new ScrollPanel(notificationsPanel), "Sharing requests", HEADERSIZE);
 				buildMachinesList();
 			}
 		});
@@ -163,32 +153,57 @@ public class MainPanel extends StackLayoutPanel {
 			public void onFailure(Throwable caught) {
 				notificationsPanel.clear();
 				notificationsPanel.add(new HTML("<b>Failure while getting the notifications :-(</b>"));
+				notificationsTimer.cancel();
 			}
 
 			@Override
 			public void onSuccess(LinkedList<Notification> result) {
+				
+				if (result == null)
+					notificationsTimer.cancel();
 				
 				// if the notifications' list has changed in some way, then refresh the panel
 				if (!notifications.equals(result)) {
 					notifications = result;
 					notificationsPanel.clear();
 					
-					for (Notification notification : notifications) {
+					for (final Notification notification : notifications) {
 						notificationsPanel.add(new HTML("<b>New notification from: " + notification.getFrom() + "</b><br />"));
 						switch (notification.getType()) {
 						case SHAREMACHINE:
 							final Button accept = new Button("Accept");
 							final Button refuse = new Button("Refuse");
 							final HorizontalPanel container = new HorizontalPanel();
-							ShareMachineNotification n = (ShareMachineNotification) notification;
+							final ShareMachineNotification n = (ShareMachineNotification) notification;
 							notificationsPanel.add(new HTML("He/She wants to share " + n.getMachineName() + " with you.<br />"));
 							notificationsPanel.add(new HTML(n.getMessage() + "<br />"));
 							container.add(accept);
 							container.add(new HTML("&nbsp;&nbsp;&nbsp;"));
 							container.add(refuse);
+							
+							accept.addClickHandler(new ClickHandler() {
+								
+								@Override
+								public void onClick(ClickEvent event) {
+									acceptShareProxy.acceptShare(n, new AsyncCallback<Boolean>() {
+
+										@Override
+										public void onFailure(Throwable caught) {
+											Window.alert(caught.getMessage());
+										}
+
+										@Override
+										public void onSuccess(Boolean result) {
+											if (result)
+												Window.alert("Share accepted successfully. Refresh your machines' list to see it.");
+										}
+									});
+								}
+							});
+							
 						
 							notificationsPanel.add(container);
-							notificationsPanel.add(new HTML("<br /><br /><br /><br />"));
+							notificationsPanel.add(new HTML("<br /><br />"));
 							
 							break;
 						}

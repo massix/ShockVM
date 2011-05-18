@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MachineInfo implements IsSerializable {
+	private String configurationFile;
 	private String iso;
 	private String name;
 	private String description;
@@ -188,5 +189,13 @@ public class MachineInfo implements IsSerializable {
 
 	public String getRealOwner() {
 		return realOwner;
+	}
+
+	public void setConfigurationFile(String configurationFile) {
+		this.configurationFile = configurationFile;
+	}
+
+	public String getConfigurationFile() {
+		return configurationFile;
 	}
 }

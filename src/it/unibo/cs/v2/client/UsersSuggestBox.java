@@ -47,6 +47,9 @@ public class UsersSuggestBox extends SuggestBox implements ValueChangeHandler<St
 		oracle = (MultiWordSuggestOracle) getSuggestOracle();
 		addValueChangeHandler(this);
 		
+		// Update first when launched
+		doUpdate();
+		
 		// Update every ten seconds
 		updateListTimer.scheduleRepeating(10000);
 	}

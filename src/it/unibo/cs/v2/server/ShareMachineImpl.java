@@ -5,6 +5,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Date;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import it.unibo.cs.v2.servlets.ShareMachine;
 import it.unibo.cs.v2.shared.MachineInfo;
 import it.unibo.cs.v2.shared.NotificationType;
@@ -71,6 +82,23 @@ public class ShareMachineImpl extends RemoteServiceServlet implements ShareMachi
 		
 		notificationWriter.flush();
 		notificationWriter.close();
+		
+		// Write out the pending user in the XML File
+		File machineFile = new File(machine.getConfigurationFile());
+		DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		Document doc = db.parse(machineFile);
+		
+		Element root = doc.getDocumentElement();
+		
+		Element newShare = doc.createElement("share");
+		newShare.setAttribute("status", "pending");
+		newShare.setAttribute("user", user);
+		
+		root.appendChild(newShare);
+		
+		Transformer t = TransformerFactory.newInstance().newTransformer();
+		t.setOutputProperty(OutputKeys.INDENT, "yes");
+		t.transform(new DOMSource(doc), new StreamResult(machineFile));
 		
 		return true;
 	}

@@ -32,11 +32,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 
 // TODO implement a timer that checks the server to see if the machine has changed in some way (new
 // accepted share?)
@@ -51,7 +53,7 @@ public class MachinePanel extends HTMLPanel {
 	private final HTML storageHdbHTML;
 	private final HTML virtuaClusterHTML;
 	private final HTML secondNetworkHTML;
-	private final HTML workingSharesHTML;
+	private final Widget workingSharesHTML;
 	private final HTML pendingSharesHTML = new HTML();
 	private final HTML newLine = new HTML("<br />");
 	
@@ -88,6 +90,8 @@ public class MachinePanel extends HTMLPanel {
 				refreshPendingShares();
 				// TODO save machine status on the server
 			}
+			else
+				usersBox.setText("");
 		}
 	};
 	
@@ -177,8 +181,16 @@ public class MachinePanel extends HTMLPanel {
 			if (usersBox.getText().equals(""))
 				return;
 			
-			else if (machineInfo.getPendingShares().length > 0) {
+			if (machineInfo.getPendingShares().length > 0) {
 				for (String user : machineInfo.getPendingShares())
+					if (user.equals(usersBox.getText())) {
+						usersBox.setText("");
+						return;
+					}
+			}
+			
+			if (machineInfo.getShares().length > 0) {
+				for (String user : machineInfo.getShares())
 					if (user.equals(usersBox.getText())) {
 						usersBox.setText("");
 						return;
@@ -219,20 +231,36 @@ public class MachinePanel extends HTMLPanel {
 			refreshPendingShares();
 			
 			if (machineInfo.getShares().length < 1)
-				workingSharesHTML = new HTML("&nbsp;&nbsp;No accepted shares");
+				workingSharesHTML = new HTML("&nbsp;&nbsp;No accepted shares<br />");
 			
 			else {
 				String[] shares = machineInfo.getShares();
-				String html = "";
-				for (String s : shares)
-					html += "&nbsp;&nbsp;" + s + " (accepted)<br />";
-				workingSharesHTML = new HTML(html);
+				
+				workingSharesHTML = new FlexTable();
+				int row = 0;
+				
+				for (final String s : shares) {
+					Anchor removeShare = new Anchor("Remove");
+
+					removeShare.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							Window.alert("Removing share " + s);
+						}
+					});
+					
+					((FlexTable) workingSharesHTML).setWidget(row, 0, new HTML(s));
+					((FlexTable) workingSharesHTML).setWidget(row, 1, removeShare);
+				
+					row++;
+				}
 			}
 		}
 		
 		else {
-			pendingSharesHTML.setHTML("");
-			workingSharesHTML = new HTML("&nbsp;&nbsp;This machine belongs to: " + machineInfo.getRealOwner());
+			pendingSharesHTML.setHTML("&nbsp;&nbsp;This machine belongs to: <b>" + machineInfo.getRealOwner() + "</b>");
+			workingSharesHTML = new HTML("&nbsp;&nbsp;This machine belongs to: <b>" + machineInfo.getRealOwner() + "</b>");
 		}
 		
 		// Build up the HTML
@@ -255,19 +283,24 @@ public class MachinePanel extends HTMLPanel {
 		add(secondNetworkHTML);
 		add(newLine);
 		
-		add(new HTML("<br /><b>Shares</b><br />"));
+		add(new HTML("<br /><b>Pending Shares</b><br />"));
 		add(pendingSharesHTML);
 		add(newLine);
+		
+		add(new HTML("<br /><b>Accepted Shares</b><br />"));
 		add(workingSharesHTML);
 		add(newLine);
 		if (belongs) {
+			add(new HTML("<br /><b>Add a new share</b><br />"));
 			add(usersBox);
 			add(addShare);
 		}
 		
-		add(new HTML("<br /><b>Boot order</b><br />"));
-		add(bootFrom);
-		add(newLine);
+		if (belongs) {
+			add(new HTML("<br /><b>Boot order</b><br />"));
+			add(bootFrom);
+			add(newLine);
+		}
 		
 		add(new HTML("<br /><b>Command</b></br />"));
 		add(startDeletePanel);
@@ -281,7 +314,7 @@ public class MachinePanel extends HTMLPanel {
 			String[] shares = machineInfo.getPendingShares();
 			String html = "";
 			for (String s : shares)
-				html += "&nbsp;&nbsp;<i>" + s + "</i> (pending)<br />";
+				html += "&nbsp;&nbsp;" + s + "<br />";
 			pendingSharesHTML.setHTML(html);
 		}
 	}

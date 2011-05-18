@@ -76,6 +76,11 @@
   	<servlet-class>it.unibo.cs.v2.server.GetNotificationsImpl</servlet-class>
   </servlet>
   
+  <servlet>
+  	<servlet-name>acceptshare</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.AcceptShareImpl</servlet-class>
+  </servlet>
+  
   <!-- Mappings -->
   <servlet-mapping>
   	<servlet-name>user</servlet-name>
@@ -145,6 +150,11 @@
   <servlet-mapping>
   	<servlet-name>getnotifications</servlet-name>
   	<url-pattern>/flozconfigurator/getnotifications</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>acceptshare</servlet-name>
+  	<url-pattern>/flozconfigurator/acceptshare</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
