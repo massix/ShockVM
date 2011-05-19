@@ -22,6 +22,7 @@ public class MachineProcessInfo implements IsSerializable {
 	private int pid;
 	private int vncServer;
 	private String machineName;
+	private boolean owned;
 	
 	public void setPid(int pid) {
 		this.pid = pid;
@@ -45,5 +46,13 @@ public class MachineProcessInfo implements IsSerializable {
 
 	public String getMachineName() {
 		return machineName;
+	}
+
+	public void setOwned(boolean owned) {
+		this.owned = owned;
+	}
+
+	public boolean isOwned() {
+		return owned;
 	}
 }

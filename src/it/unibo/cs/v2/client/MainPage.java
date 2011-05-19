@@ -93,6 +93,7 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 				" please use the \"Shutdown this machine\" button positioned on the bottom of the page</b><br />" +
 				"<applet code=\"VncViewer.class\" archive=\"VncViewer.jar\" width=\"1024\" height=\"768\">" +
 				"<param name=\"port\" value=\"" + (5900+mpi.getVncServer()) + "\"/>" +
+				"<param name=\"view only\" value=\"" + (mpi.isOwned()? "no" : "yes") + "\"/>" +
 				"</applet>");
 		final Button shutdown = new Button("Shutdown this machine");
 		add(shutdown);

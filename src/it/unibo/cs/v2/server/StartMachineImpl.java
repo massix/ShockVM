@@ -37,6 +37,7 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 	public MachineProcessInfo startViewMachine(MachineInfo machineInfo) throws Exception {
 		MachineProcessInfo mp = new MachineProcessInfo();
 		mp.setMachineName(machineInfo.getName());
+		mp.setOwned(true);
 
 		String home = (String) getThreadLocalRequest().getSession().getAttribute("home");
 		String user = (String) getThreadLocalRequest().getSession().getAttribute("login");
@@ -44,13 +45,14 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		// TODO: check if the machine is owned by the user that invoked the applet
 		String realOwner = machineInfo.getRealOwner();
 		if (!realOwner.equals(user)) {
-			File otherUserDir = new File(getServletContext().getRealPath("users/" + realOwner));
+			File otherUserDir = new File(getServletContext().getRealPath("/users/" + realOwner));
 			if (!otherUserDir.exists())
 				throw new Exception("You don't own this machine, and appearently, the user that owns it doesn't exist.");
 			
-			File otherUserActiveFile = new File("users/" + realOwner + "/ACTIVEMACHINES.txt");
+			File otherUserActiveFile = new File(getServletContext().getRealPath("users/" + realOwner + "/ACTIVEMACHINES.txt"));
+
 			if (!otherUserActiveFile.exists())
-				throw new Exception("You don't own this machine and the real owner hasn't started it yet.");
+				throw new Exception("You don't own this machine and " + realOwner + " hasn't started any machine yet.");
 			
 			else {
 				BufferedReader br = new BufferedReader(new FileReader(otherUserActiveFile));
@@ -69,12 +71,14 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 						
 						br.close();
 						
+						mp.setOwned(false);
+						
 						return mp;
 					}
 				}
 			}
 			
-			throw new Exception("You don't own this machine and the real owner hasn't started it yet.");
+			throw new Exception("You don't own this machine and " + realOwner + " hasn't started it yet.");
 
 		}
 		
@@ -162,9 +166,12 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 			if ((mac = machineInfo.getMacAddress()) != null)
 				kvmCommand += " -net nic,vlan=0,macaddr=" + mac;
 			else
-				kvmCommand += " -net nic,vlan=0";
+				kvmCommand += " -net nic,vlan=0,macaddr=52:54:00:AA:BB:" + freeVnc;
 			kvmCommand += " -net vde,vlan=0,sock=/tmp/virtua_switch";
 		}
+		
+		if (!machineInfo.isVirtuacluster() && !machineInfo.isSecondNetwork())
+			kvmCommand += " -net none";
 		
 		kvmCommand += " -boot " + (machineInfo.isBootCdrom()? "d" : "c");
 		
