@@ -41,6 +41,44 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		String home = (String) getThreadLocalRequest().getSession().getAttribute("home");
 		String user = (String) getThreadLocalRequest().getSession().getAttribute("login");
 
+		// TODO: check if the machine is owned by the user that invoked the applet
+		String realOwner = machineInfo.getRealOwner();
+		if (!realOwner.equals(user)) {
+			File otherUserDir = new File(getServletContext().getRealPath("users/" + realOwner));
+			if (!otherUserDir.exists())
+				throw new Exception("You don't own this machine, and appearently, the user that owns it doesn't exist.");
+			
+			File otherUserActiveFile = new File("users/" + realOwner + "/ACTIVEMACHINES.txt");
+			if (!otherUserActiveFile.exists())
+				throw new Exception("You don't own this machine and the real owner hasn't started it yet.");
+			
+			else {
+				BufferedReader br = new BufferedReader(new FileReader(otherUserActiveFile));
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.length() < 7)
+						continue;
+					
+					String[] values = line.split("::");
+					if (values == null)
+						continue;
+					
+					if (values[0].equals(machineInfo.getName())) {
+						mp.setPid(new Integer(values[1]));
+						mp.setVncServer(new Integer(values[2]));
+						
+						br.close();
+						
+						return mp;
+					}
+				}
+			}
+			
+			throw new Exception("You don't own this machine and the real owner hasn't started it yet.");
+
+		}
+		
+		// The owner of the machine is the user that invoked the applet
 		VirtuaLogger logger = new VirtuaLogger(home, this.getClass().toString());
 		
 		if (home.equals("") || user.equals(""))

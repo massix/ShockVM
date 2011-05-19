@@ -30,8 +30,7 @@ import it.unibo.cs.v2.shared.MachineProcessInfo;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
-public class ShutdownMachineImpl extends RemoteServiceServlet implements
-		ShutdownMachine {
+public class ShutdownMachineImpl extends RemoteServiceServlet implements ShutdownMachine {
 
 	private VirtuaLogger logger;
 	
