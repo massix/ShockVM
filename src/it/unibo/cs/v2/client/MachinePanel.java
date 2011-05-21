@@ -338,6 +338,7 @@ public class MachinePanel extends HTMLPanel {
 		add(new HTML("<br /><b>Command</b></br />"));
 		tabletDevice.setValue(true);
 		add(tabletDevice);
+		add(newLine);
 		add(newWindow);
 		add(startDeletePanel);
 	}

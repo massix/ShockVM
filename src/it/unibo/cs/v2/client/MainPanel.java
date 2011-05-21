@@ -152,7 +152,7 @@ public class MainPanel extends StackLayoutPanel {
 			public void onSuccess(LinkedList<MachineInfo> result) {
 				if (result != null) {
 					for (final MachineInfo machineInfo : result) 
-						insert(new MachinePanel(machineInfo, machineInfo.getRealOwner().equals(userInfo.get("login"))), 
+						insert(new ScrollPanel(new MachinePanel(machineInfo, machineInfo.getRealOwner().equals(userInfo.get("login")))), 
 								machineInfo.getName(), HEADERSIZE, getWidgetCount() - 1);
 				}
 			}
