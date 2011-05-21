@@ -84,15 +84,17 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 		History.newItem("", false);
 	}
 
-	public void showApplet(final MachineProcessInfo mpi) {
+	public void showApplet(final MachineProcessInfo mpi, final boolean newWindow) {
 		clear();
 		
 		add(vncApplet);
 
-		vncApplet.setHTML("<h2>Viewing " + mpi.getMachineName() + " (" + mpi.getPid() + ")</h2><b>To shutdown this machine, freeing the VNC server," +
-				" please use the \"Shutdown this machine\" button positioned on the bottom of the page</b><br />" +
+		vncApplet.setHTML("<h2>Viewing " + mpi.getMachineName() + " (" + mpi.getPid() + ")</h2>" +
+				"<b>To shutdown this machine, freeing the VNC server, " +
+				"please use the \"Shutdown this machine\" button positioned on the bottom of the page</b><br />" +
 				"<applet code=\"VncViewer.class\" archive=\"VncViewer.jar\" width=\"1024\" height=\"768\">" +
 				"<param name=\"port\" value=\"" + (5900+mpi.getVncServer()) + "\"/>" +
+				"<param name=\"open new window\" value=\"" + (newWindow? "yes" : "no") + "\"/>" +
 				"<param name=\"view only\" value=\"" + (mpi.isOwned()? "no" : "yes") + "\"/>" +
 				"</applet>");
 		final Button shutdown = new Button("Shutdown this machine");
@@ -106,7 +108,8 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 					
 					@Override
 					public void onSuccess(Void result) {
-						vncApplet.setHTML("<h2>Thank you</h2><span style=\"color: green\">Machine successfully shut down.</span>");
+						vncApplet.setHTML("<h2>Thank you</h2><span style=\"color: green\">" +
+								"Machine successfully shut down.</span>");
 						remove(shutdown);
 					}
 					

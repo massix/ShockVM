@@ -34,6 +34,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -65,6 +66,9 @@ public class MachinePanel extends HTMLPanel {
 	
 	// ListBox for ISOs
 	private final ListBox bootFrom = new ListBox();
+	
+	// Checkbox to allow the user to open the Java Applet in a new Window
+	private final CheckBox newWindow = new CheckBox("Open in a new Window");
 	
 	// Start/Delete machine buttons
 	private final HorizontalPanel startDeletePanel = new HorizontalPanel();
@@ -119,7 +123,7 @@ public class MachinePanel extends HTMLPanel {
 
 				@Override
 				public void onSuccess(MachineProcessInfo result) {
-					MainPage.getInstance().showApplet(result);
+					MainPage.getInstance().showApplet(result, newWindow.getValue());
 					startButton.setEnabled(true);
 					remove(loadingGif);
 				}
@@ -328,6 +332,7 @@ public class MachinePanel extends HTMLPanel {
 		}
 		
 		add(new HTML("<br /><b>Command</b></br />"));
+		add(newWindow);
 		add(startDeletePanel);
 	}
 	

@@ -86,6 +86,11 @@
   	<servlet-class>it.unibo.cs.v2.server.RemoveShareImpl</servlet-class>
   </servlet>
   
+  <servlet>
+  	<servlet-name>getactivemachines</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.GetActiveMachinesImpl</servlet-class>
+  </servlet>
+  
   <!-- Mappings -->
   <servlet-mapping>
   	<servlet-name>user</servlet-name>
@@ -165,6 +170,11 @@
   <servlet-mapping>
   	<servlet-name>removeshare</servlet-name>
   	<url-pattern>/flozconfigurator/removeshare</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>getactivemachines</servlet-name>
+  	<url-pattern>/flozconfigurator/getactivemachines</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

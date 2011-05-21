@@ -19,11 +19,14 @@ package it.unibo.cs.v2.client;
 
 import it.unibo.cs.v2.servlets.AcceptShare;
 import it.unibo.cs.v2.servlets.AcceptShareAsync;
+import it.unibo.cs.v2.servlets.GetActiveMachines;
+import it.unibo.cs.v2.servlets.GetActiveMachinesAsync;
 import it.unibo.cs.v2.servlets.GetMachines;
 import it.unibo.cs.v2.servlets.GetMachinesAsync;
 import it.unibo.cs.v2.servlets.GetNotifications;
 import it.unibo.cs.v2.servlets.GetNotificationsAsync;
 import it.unibo.cs.v2.shared.MachineInfo;
+import it.unibo.cs.v2.shared.MachineProcessInfo;
 import it.unibo.cs.v2.shared.Notification;
 import it.unibo.cs.v2.shared.ShareMachineNotification;
 
@@ -58,10 +61,12 @@ public class MainPanel extends StackLayoutPanel {
 	private final String ZERO_NOTIFICATIONS = "<b>No new notifications</b>";
 	
 	private final HTMLPanel firstPanel = new HTMLPanel(WELCOME_STRING);
+	private final HTMLPanel activeMachinesPanel = new HTMLPanel("<h2>Active machines</h2>");
 	private final HTMLPanel machines = new HTMLPanel("");
 	private final HTMLPanel notificationsPanel = new HTMLPanel("");
 	
 	private LinkedList<Notification> notifications = new LinkedList<Notification>();
+	private LinkedList<MachineProcessInfo> activeMachines = new LinkedList<MachineProcessInfo>();
 	
 	private final Timer notificationsTimer = new Timer() {
 		
@@ -71,11 +76,20 @@ public class MainPanel extends StackLayoutPanel {
 		}
 	};
 	
+	private final Timer activeMachinesTimer = new Timer() {
+		
+		@Override
+		public void run() {
+			getActiveMachines();
+		};
+	};
+	
 	private final HashMap<String, String> userInfo;
 
 	private final GetMachinesAsync getMachinesProxy = (GetMachinesAsync) GWT.create(GetMachines.class);
 	private final GetNotificationsAsync getNotificationsProxy = (GetNotificationsAsync) GWT.create(GetNotifications.class);
 	private final AcceptShareAsync acceptShareProxy = (AcceptShareAsync) GWT.create(AcceptShare.class);
+	private final GetActiveMachinesAsync getActiveMachinesProxy = (GetActiveMachinesAsync) GWT.create(GetActiveMachines.class);
 	
 	public MainPanel(final HashMap<String, String> userInfo) {
 		super(Unit.EM);
@@ -93,6 +107,8 @@ public class MainPanel extends StackLayoutPanel {
 		firstPanel.add(new HTML("<h2>New machine</h2>"));
 		firstPanel.add(new Hyperlink("Create from scratch", HistoryTokens.NEWMACHINE));
 		firstPanel.add(new Hyperlink("Create from an existing one", HistoryTokens.PREBUILT));
+		
+		firstPanel.add(activeMachinesPanel);
 		
 		firstPanel.add(new HTML("<h2>Credits</h2>"));
 		firstPanel.add(new Anchor("VirtualSquare", "http://wiki.virtualsquare.org", "_blank")); 
@@ -123,6 +139,9 @@ public class MainPanel extends StackLayoutPanel {
 		
 		// Get notifications every 3 seconds
 		notificationsTimer.scheduleRepeating(3000);
+		
+		// Get active machines every 3 seconds
+		activeMachinesTimer.scheduleRepeating(3000);
 	}
 	
 	private final void buildMachinesList() {
@@ -213,6 +232,33 @@ public class MainPanel extends StackLayoutPanel {
 				else if (result.size() < 1) {
 					notificationsPanel.clear();
 					notificationsPanel.add(new HTML(ZERO_NOTIFICATIONS));
+				}
+			}
+		});
+	}
+	
+	public void getActiveMachines() {
+		getActiveMachinesProxy.getActiveMachines(new AsyncCallback<LinkedList<MachineProcessInfo>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				activeMachinesPanel.clear();
+				activeMachinesPanel.add(new HTML("<b>Failure while getting the active machines' list :-(</b>"));
+			}
+
+			@Override
+			public void onSuccess(LinkedList<MachineProcessInfo> result) {
+				if (result == null) {
+					activeMachinesPanel.clear();
+					return;
+				}
+				
+				if (!activeMachines.equals(result)) {
+					activeMachines = result;
+					
+					activeMachinesPanel.clear();
+					for (MachineProcessInfo mp : activeMachines) 
+						activeMachinesPanel.add(new HTML("<b>" + mp.getMachineName() + "</b> on server " + mp.getVncServer() + "<br />"));
 				}
 			}
 		});
