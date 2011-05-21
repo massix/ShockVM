@@ -154,8 +154,7 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		mp.setPid(0);
 		
 		String kvmCommand = "kvm -cdrom " + getServletContext().getRealPath(machineInfo.getIso());
-//		String kvmCommand = "qemu -cdrom " + machineInfo.getIso();
-		
+	
 		kvmCommand += " -hda " + machineInfo.getHda();
 		
 		if (machineInfo.isHdbEnabled())
@@ -177,8 +176,10 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		
 		kvmCommand += " -nographic -vnc :" + freeVnc;
 		
-		kvmCommand += " -m 1024 -enable-kvm -vga std -usbdevice tablet";
-//		kvmCommand += "&\n\n";
+		kvmCommand += " -m 1024 -enable-kvm -vga std";
+		
+		if (machineInfo.isTabletDevice())
+			kvmCommand += " -usbdevice tablet";
 		
 		String pgrepCommand = "pgrep -nu tomcat6 -fx \"" + kvmCommand + "\" > .temp\n\n";
 		

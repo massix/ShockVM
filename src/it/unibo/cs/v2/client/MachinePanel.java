@@ -70,6 +70,9 @@ public class MachinePanel extends HTMLPanel {
 	// Checkbox to allow the user to open the Java Applet in a new Window
 	private final CheckBox newWindow = new CheckBox("Open in a new Window");
 	
+	// Checkbox to allow the user to set the -usbdevice tablet for this particular machine
+	private final CheckBox tabletDevice = new CheckBox("Set tablet device (-usbdevice tablet)");
+	
 	// Start/Delete machine buttons
 	private final HorizontalPanel startDeletePanel = new HorizontalPanel();
 	private final Button startButton = new Button("Start/View machine");
@@ -109,6 +112,7 @@ public class MachinePanel extends HTMLPanel {
 		public void onClick(ClickEvent event) {
 			startButton.setEnabled(false);
 			machineInfo.setBootCdrom(bootFrom.getValue(bootFrom.getSelectedIndex()).equals("d"));
+			machineInfo.setTabletDevice(tabletDevice.getValue());
 			final Image loadingGif = new Image("loading.gif");
 			add(loadingGif);
 			
@@ -332,6 +336,8 @@ public class MachinePanel extends HTMLPanel {
 		}
 		
 		add(new HTML("<br /><b>Command</b></br />"));
+		tabletDevice.setValue(true);
+		add(tabletDevice);
 		add(newWindow);
 		add(startDeletePanel);
 	}
