@@ -250,6 +250,7 @@ public class MainPanel extends StackLayoutPanel {
 			public void onSuccess(LinkedList<MachineProcessInfo> result) {
 				if (result == null) {
 					activeMachinesPanel.clear();
+					activeMachinesPanel.add(new HTML("No running machines found."));
 					return;
 				}
 				
