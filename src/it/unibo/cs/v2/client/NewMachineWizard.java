@@ -252,10 +252,20 @@ public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedL
 	public void onSuccess(LinkedList<HashMap<String, String>> result) {
 		this.isos = result;
 		isoListBox.clear();
+		
+		// No isos found on the server.
+		if (result == null) {
+			descriptionLabel.setHTML("No images found on the server.");
+			submitButton.setEnabled(false);
+			return;
+		}
+		
+		// Everything seems ok.
 		for (HashMap<String, String> h : result) 
 			isoListBox.addItem(h.get("name"));
 		
 		descriptionLabel.setHTML("Select an image to show its description!");
+		submitButton.setEnabled(true);
 	}
 
 	private void showSuccess(String msg) {
