@@ -35,10 +35,10 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 
 public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 	private static MainPage instance;
-	private final String WELCOME = "<h2>Welcome to Live VirtuaCluster!</h2>" +
-			"This is the main interface of <b>Live VirtuaCluster</b>, use the left panel to create a new machine or to start up" +
+	private final String WELCOME = "<h2>Welcome to Live ShockVM!</h2>" +
+			"This is the main interface of <b>Live ShockVM</b>, use the left panel to create a new machine or to start up" +
 			" the machines you've already created. The left panel is divided into three menus: the one with your name is the main menu, where you can create " +
-			"a new machine; the second one is a short brief of the machines you already own while the latter one displays the MOTD of Live VirtuaCluster.";
+			"a new machine; the second one is a short brief of the machines you already own while the latter one displays the MOTD of Live ShockVM.";
 	
 	private final HTML label = new HTML(WELCOME);
 	private HTML vncApplet = new HTML();

@@ -44,7 +44,7 @@ public class FlozConfigurator extends DockLayoutPanel implements EntryPoint {
 	}
 
 
-	private final String COPYRIGHT = "<b>Live VirtuaCluster is part of the VirtuaCluster, "
+	private final String COPYRIGHT = "<b>Live ShockVM is part of the VirtuaCluster, "
 		+ "Copyright (C) 2011 - Massimo Gengarelli "
 		+ "&lt;gengarel@cs.unibo.it&gt;</b>";
 
@@ -76,7 +76,7 @@ public class FlozConfigurator extends DockLayoutPanel implements EntryPoint {
 		getElement().setAttribute("id", "mainPanel");
 
 		addNorth(new HTML("<div id=\"Header\"> "
-				+ "<h1>Live VirtuaCluster</h1>" + "</div>"), 6);
+				+ "<h1>Live ShockVM</h1>" + "</div>"), 6);
 		
 		footerHTML.getElement().getStyle().setMarginTop(3, Unit.EM);
 		

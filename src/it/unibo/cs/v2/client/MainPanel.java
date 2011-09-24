@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.StackLayoutPanel;
 public class MainPanel extends StackLayoutPanel {
 	private final int HEADERSIZE = 2;
 	
-	private final String WELCOME_STRING = "Welcome to <b>Live VirtuaCluster</b>. <br/>" +
+	private final String WELCOME_STRING = "Welcome to <b>Live ShockVM</b>. <br/>" +
 			"Using this simple web app you can easily create a personal virtual machine to use whenever you want, " +
 			"you can also share it with your friends and see the progresses they're making with your machines. Creating a " +
 			"new machine is as simple as clicking some buttons and following some instructions. If you should encounter a " +
