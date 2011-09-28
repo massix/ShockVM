@@ -202,4 +202,24 @@
     <welcome-file>FlozConfigurator.html</welcome-file>
   </welcome-file-list>
   
+  
+  <!-- Security constraints -->
+  <security-constraint>
+  	<display-name>Private files</display-name>
+  	
+  	<web-resource-collection>
+  		<web-resource-name>Users file</web-resource-name>
+  		<url-pattern>/users.xml</url-pattern>
+  	</web-resource-collection>
+
+  	<web-resource-collection>
+  		<web-resource-name>Users dir</web-resource-name>
+  		<url-pattern>/users/*</url-pattern>
+  	</web-resource-collection>
+  	
+  	<auth-constraint>
+  		<role-name>admin</role-name>
+  	</auth-constraint>
+  </security-constraint>
+	  
 </web-app>
