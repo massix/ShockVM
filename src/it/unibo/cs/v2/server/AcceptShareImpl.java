@@ -16,11 +16,13 @@
 
 package it.unibo.cs.v2.server;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +40,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import it.unibo.cs.v2.servlets.AcceptShare;
+import it.unibo.cs.v2.shared.NotificationType;
 import it.unibo.cs.v2.shared.ShareMachineNotification;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -57,10 +60,8 @@ public class AcceptShareImpl extends RemoteServiceServlet implements AcceptShare
 		
 		if (!notificationFile.exists())
 			throw new Exception("Notification not found on server. This is programmers' fault, not yours.");
-		
 		else
 			notificationFile.delete();
-		
 		
 		File remoteMachineFile = new File(getServletContext().getRealPath("users/" + notification.getFrom() + 
 				"/" + notification.getMachineName().replace(' ', '_') + ".xml"));
@@ -93,6 +94,30 @@ public class AcceptShareImpl extends RemoteServiceServlet implements AcceptShare
 			t.transform(new DOMSource(xmlDoc), new StreamResult(remoteMachineFile));
 		}
 		
+		// Drop a notification to the other user
+		File notify = new File(getServletContext().getRealPath("users/" + notification.getFrom() + "/notification-" + new Date().getTime() + ".txt"));
+		notify.createNewFile();
+		
+		BufferedWriter br = new BufferedWriter(new FileWriter(notify));
+		
+		// First line is the notification type
+		br.write(NotificationType.ACCEPTEDSHARE.toString());
+		br.newLine();
+		
+		// Second line is the user sending the notification
+		br.write(user);
+		br.newLine();
+		
+		// Third line is the machine name
+		br.write(notification.getMachineName());
+		br.newLine();
+		
+		// And then the HTML message itself
+		br.write("User " + user + " accepted the share of the machine " + notification.getMachineName());
+		br.newLine();
+		
+		br.flush();
+		br.close();
 		return true;
 	}
 	

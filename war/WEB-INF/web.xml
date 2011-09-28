@@ -82,6 +82,16 @@
   </servlet>
   
   <servlet>
+  	<servlet-name>refuseshare</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.RefuseShareImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+  	<servlet-name>removenotification</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.RemoveNotificationImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
   	<servlet-name>removeshare</servlet-name>
   	<servlet-class>it.unibo.cs.v2.server.RemoveShareImpl</servlet-class>
   </servlet>
@@ -168,8 +178,18 @@
   </servlet-mapping>
   
   <servlet-mapping>
+  	<servlet-name>refuseshare</servlet-name>
+  	<url-pattern>/flozconfigurator/refuseshare</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
   	<servlet-name>removeshare</servlet-name>
   	<url-pattern>/flozconfigurator/removeshare</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>removenotification</servlet-name>
+  	<url-pattern>/flozconfigurator/removenotification</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>

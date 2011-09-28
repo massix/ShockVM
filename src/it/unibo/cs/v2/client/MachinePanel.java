@@ -43,9 +43,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO implement a timer that checks the server to see if the machine has changed in some way (new
-// accepted share?)
-
 public class MachinePanel extends HTMLPanel {
 	private final MachineInfo machineInfo;
 	
@@ -98,7 +95,6 @@ public class MachinePanel extends HTMLPanel {
 				machineInfo.addPendingShare(usersBox.getText());
 				usersBox.setText("");
 				refreshPendingShares();
-				// TODO save machine status on the server
 			}
 			else
 				usersBox.setText("");
@@ -136,7 +132,6 @@ public class MachinePanel extends HTMLPanel {
 	};
 	
 	// Handler for deleteButton
-	// TODO handle this event in a cleaner way
 	private final ClickHandler deleteButtonClickHandler = new ClickHandler() {
 		
 		@Override
@@ -273,10 +268,8 @@ public class MachinePanel extends HTMLPanel {
 								@Override
 								public void onSuccess(Boolean result) {
 									if (result) {
-										Window.alert("Share with " + s + " successfully removed. Refresh the machines' list to see the changes.");
 										((FlexTable) workingSharesHTML).remove(loadingGif);
 										((FlexTable) workingSharesHTML).setWidget(currentRow, 1, new HTML("<b>No longer sharing</b>"));
-										
 									}
 								}
 							});

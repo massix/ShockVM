@@ -16,18 +16,19 @@
 
 package it.unibo.cs.v2.server;
 
-import java.util.LinkedList;
+import it.unibo.cs.v2.servlets.GetNotifications;
+import it.unibo.cs.v2.shared.Notification;
+import it.unibo.cs.v2.shared.NotificationType;
+import it.unibo.cs.v2.shared.RefuseMachineNotification;
+import it.unibo.cs.v2.shared.ShareMachineNotification;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-
-import it.unibo.cs.v2.servlets.GetNotifications;
-import it.unibo.cs.v2.shared.Notification;
-import it.unibo.cs.v2.shared.NotificationType;
-import it.unibo.cs.v2.shared.ShareMachineNotification;
+import java.util.LinkedList;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -66,9 +67,12 @@ public class GetNotificationsImpl extends RemoteServiceServlet implements GetNot
 				NotificationType type = Notification.parseNotificationType(notificationReader.readLine());
 				switch (type) {
 				case ACCEPTEDSHARE:
-					return null;
 				case REFUSEDSHARE:
-					return null;
+					add = new RefuseMachineNotification();
+					add.setType(type);
+					add.setFrom(notificationReader.readLine());
+					((RefuseMachineNotification) add).setMachineName(notificationReader.readLine());
+					break;
 				case SHAREMACHINE:
 					add = new ShareMachineNotification();
 					add.setType(type);
