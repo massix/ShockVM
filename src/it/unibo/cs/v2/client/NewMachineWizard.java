@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 
-public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedList<HashMap<String, String>>>, ClickHandler {
+public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedList<HashMap<String, String>>>, ClickHandler, Wizard {
 	private final GetIsoListAsync getIsoListProxy = (GetIsoListAsync) GWT.create(GetIsoList.class);
 	private final CreateMachineAsync createMachineProxy = (CreateMachineAsync) GWT.create(CreateMachine.class);
 	
@@ -135,7 +135,7 @@ public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedL
 		table = new FlexTable();
 		table.setWidget(0, 0, new HTML("Choose a name for your new VM: "));
 		table.setWidget(0, 1, name);
-		table.setWidget(1, 0, new HTML("Enter a short description of it: "));
+		table.setWidget(1, 0, new HTML("Enter a one-line description of it: "));
 		table.setWidget(1, 1, descriptionVM);
 		
 		

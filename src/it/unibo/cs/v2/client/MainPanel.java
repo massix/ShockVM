@@ -29,6 +29,7 @@ import it.unibo.cs.v2.servlets.RefuseShare;
 import it.unibo.cs.v2.servlets.RefuseShareAsync;
 import it.unibo.cs.v2.servlets.RemoveNotification;
 import it.unibo.cs.v2.servlets.RemoveNotificationAsync;
+import it.unibo.cs.v2.shared.ExportCompleteNotification;
 import it.unibo.cs.v2.shared.MachineInfo;
 import it.unibo.cs.v2.shared.MachineProcessInfo;
 import it.unibo.cs.v2.shared.Notification;
@@ -111,9 +112,10 @@ public class MainPanel extends StackLayoutPanel {
 		firstPanel.add(new Hyperlink("HomePage", HistoryTokens.START));
 		firstPanel.add(refresh);
 		
-		firstPanel.add(new HTML("<h2>New machine</h2>"));
+		firstPanel.add(new HTML("<h2>Machines' management</h2>"));
 		firstPanel.add(new Hyperlink("Create from scratch", HistoryTokens.NEWMACHINE));
 		firstPanel.add(new Hyperlink("Create from an existing one", HistoryTokens.PREBUILT));
+		firstPanel.add(new Hyperlink("Export an existing machine", HistoryTokens.EXPORT));
 		
 		firstPanel.add(activeMachinesPanel);
 		
@@ -228,7 +230,32 @@ public class MainPanel extends StackLayoutPanel {
 							});
 							
 							break;
+						case EXPORTCOMPLETE:
+							final Button exportOk = new Button("Ok");
+							final ExportCompleteNotification ecn = (ExportCompleteNotification) notification;
 							
+							exportOk.addClickHandler(new ClickHandler() {
+								
+								@Override
+								public void onClick(ClickEvent event) {
+									removeNotificationProxy.removeNotification(ecn, new AsyncCallback<Void>() {
+
+										@Override
+										public void onFailure(Throwable caught) {
+											Window.alert(caught.getMessage());
+										}
+
+										@Override
+										public void onSuccess(Void result) {
+											buildMachinesList();
+										}
+									});
+								}
+							});
+							
+							notificationsPanel.add(new HTML("Export of machine " + ecn.getMachineName() + " " + (ecn.isSucceeded()? "completed" : "gave an error")));
+							notificationsPanel.add(exportOk);
+							break;
 						case SHAREMACHINE:
 							final Button accept = new Button("Accept");
 							final Button refuse = new Button("Refuse");

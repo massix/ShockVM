@@ -47,15 +47,15 @@ public class MachinePanel extends HTMLPanel {
 	private final MachineInfo machineInfo;
 	
 	// HTML items
-	private final HTML descriptionHTML;
-	private final HTML basicHTML;
-	private final HTML storageHdaHTML;
-	private final HTML storageHdbHTML;
-	private final HTML virtuaClusterHTML;
-	private final HTML secondNetworkHTML;
-	private final Widget workingSharesHTML;
-	private final HTML pendingSharesHTML = new HTML();
-	private final HTML newLine = new HTML("<br />");
+	private final HTML		descriptionHTML;
+	private final HTML		basicHTML;
+	private final HTML		storageHdaHTML;
+	private final HTML		storageHdbHTML;
+	private final HTML		virtuaClusterHTML;
+	private final HTML		secondNetworkHTML;
+	private final Widget	workingSharesHTML;
+	private final HTML 		pendingSharesHTML = new HTML();
+	private final HTML 		newLine = new HTML("<br />");
 	
 	// Share items
 	private final UsersSuggestBox usersBox = new UsersSuggestBox();
@@ -301,6 +301,7 @@ public class MachinePanel extends HTMLPanel {
 		add(storageHdaHTML);
 		add(newLine);
 		add(storageHdbHTML);
+		add(newLine);
 		add(newLine);
 		
 		add(new HTML("<br /><b>Networking</b><br />"));

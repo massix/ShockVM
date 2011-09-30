@@ -21,8 +21,13 @@ import it.unibo.cs.v2.shared.MachineInfo;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.LinkedList;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -33,8 +38,7 @@ import org.w3c.dom.NodeList;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
-public class GetMachinesImpl extends RemoteServiceServlet implements
-		GetMachines {
+public class GetMachinesImpl extends RemoteServiceServlet implements GetMachines {
 
 	@Override
 	public LinkedList<MachineInfo> getMachines() {
@@ -81,10 +85,18 @@ public class GetMachinesImpl extends RemoteServiceServlet implements
 					if (root.getElementsByTagName("realowner").getLength() > 0) {
 						got = (Element) root.getElementsByTagName("realowner").item(0);
 						machineInfo.setRealOwner(got.getTextContent());
+						
+						// Another little check
+						if (got.getTextContent().equals(username))
+							machineInfo.setUserOwner(true);
+						else
+							machineInfo.setUserOwner(false);
 					}
 					
-					else
+					else {
 						machineInfo.setRealOwner(username);
+						machineInfo.setUserOwner(true);
+					}
 					
 					got = (Element) root.getElementsByTagName("hda").item(0);
 					machineInfo.setHda(got.getAttribute("path"));
@@ -129,5 +141,16 @@ public class GetMachinesImpl extends RemoteServiceServlet implements
 			return machines;
 		}
 	}
-
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		PrintWriter out = resp.getWriter();
+		
+		out.println("This is a list of downloadable machines..");
+	}
+	
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doPut(req, resp);
+	}
 }

@@ -32,6 +32,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 	private static MainPage instance;
@@ -42,7 +43,9 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 	
 	private final HTML label = new HTML(WELCOME);
 	private HTML vncApplet = new HTML();
-	private NewMachineWizard wizard = new NewMachineWizard();
+	
+	private Wizard newWizard = new NewMachineWizard();
+	
 	
 	private final ShutdownMachineAsync shutdownMachineProxy = (ShutdownMachineAsync) GWT.create(ShutdownMachine.class);
 	
@@ -62,23 +65,30 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 	
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
+		// Clear the page and show the new one
 		clear();
+		
 		String historyToken = event.getValue();
+
 		if (historyToken.equals(HistoryTokens.START)) {
 			label.setHTML(WELCOME);
 			add(label);	
 		}
 	
 		else if (historyToken.equals(HistoryTokens.NEWMACHINE)) {
-			if (wizard.hasFinished()) 
-				wizard = new NewMachineWizard();
+			if (newWizard.hasFinished()) 
+				newWizard = new NewMachineWizard();
 			
-			wizard.setVisible(true);
-			add(wizard);
+			((Widget) newWizard).setVisible(true);
+			add((Widget) newWizard);
 		}
 		
 		else if (historyToken.equals(HistoryTokens.PREBUILT)) {
 			add(new HTML("New machine from prebuilt huh?"));
+		}
+		
+		else if (historyToken.equals(HistoryTokens.EXPORT)) {
+			add(new ExportMachineWizard());
 		}
 		
 		History.newItem("", false);

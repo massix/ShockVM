@@ -16,9 +16,12 @@
 
 package it.unibo.cs.v2.server;
 
+import it.unibo.cs.v2.servlets.AcceptShare;
+import it.unibo.cs.v2.shared.NotificationType;
+import it.unibo.cs.v2.shared.ShareMachineNotification;
+
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -38,10 +41,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import it.unibo.cs.v2.servlets.AcceptShare;
-import it.unibo.cs.v2.shared.NotificationType;
-import it.unibo.cs.v2.shared.ShareMachineNotification;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -74,7 +73,7 @@ public class AcceptShareImpl extends RemoteServiceServlet implements AcceptShare
 		if (localMachineFile.exists())
 			throw new Exception("You already have a machine named that way. Delete it first.");
 		
-		copy(remoteMachineFile, localMachineFile);
+		Utils.copy(remoteMachineFile, localMachineFile);
 		
 		synchronized (this) {
 			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -119,21 +118,6 @@ public class AcceptShareImpl extends RemoteServiceServlet implements AcceptShare
 		br.flush();
 		br.close();
 		return true;
-	}
-	
-	private void copy(File src, File dst) throws Exception {
-		dst.createNewFile();
-		
-		FileReader srcReader = new FileReader(src);
-		FileWriter dstWriter = new FileWriter(dst);
-		
-		int c;
-		while ((c = srcReader.read()) != -1) 
-			dstWriter.write(c);
-		
-		srcReader.close();
-		dstWriter.flush();
-		dstWriter.close();
 	}
 	
 	@Override

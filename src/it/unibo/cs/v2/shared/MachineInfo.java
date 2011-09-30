@@ -36,6 +36,7 @@ public class MachineInfo implements IsSerializable {
 	private String socketPath;
 	private boolean bootCdrom;
 	private String realOwner;
+	private boolean userOwner;
 	private boolean tabletDevice;
 	private LinkedList<String> sharedWith = new LinkedList<String>();
 	private LinkedList<String> pendingShares = new LinkedList<String>();
@@ -206,5 +207,13 @@ public class MachineInfo implements IsSerializable {
 
 	public boolean isTabletDevice() {
 		return tabletDevice;
+	}
+
+	public boolean isUserOwner() {
+		return userOwner;
+	}
+
+	public void setUserOwner(boolean userOwner) {
+		this.userOwner = userOwner;
 	}
 }

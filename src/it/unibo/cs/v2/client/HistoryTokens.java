@@ -5,4 +5,5 @@ public abstract class HistoryTokens {
 	public static final String NEWMACHINE = "newMachine";
 	public static final String NEWPAGE = "newPage";
 	public static final String PREBUILT = "newPrebuilt";
+	public static final String EXPORT = "exportMachine";
 }

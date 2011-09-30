@@ -17,6 +17,7 @@
 package it.unibo.cs.v2.server;
 
 import it.unibo.cs.v2.servlets.GetNotifications;
+import it.unibo.cs.v2.shared.ExportCompleteNotification;
 import it.unibo.cs.v2.shared.Notification;
 import it.unibo.cs.v2.shared.NotificationType;
 import it.unibo.cs.v2.shared.RefuseMachineNotification;
@@ -78,6 +79,17 @@ public class GetNotificationsImpl extends RemoteServiceServlet implements GetNot
 					add.setType(type);
 					add.setFrom(notificationReader.readLine());
 					((ShareMachineNotification) add).setMachineName(notificationReader.readLine());
+					break;
+				case EXPORTCOMPLETE:
+					add = new ExportCompleteNotification();
+					add.setType(type);
+					add.setFrom("ShockVM administrator");
+					
+					// Second line is whether the export succeeded or not
+					((ExportCompleteNotification) add).setSucceeded(notificationReader.readLine().equals("true")? true : false);
+					
+					// Third line is the machine's name
+					((ExportCompleteNotification) add).setMachineName(notificationReader.readLine());
 					break;
 				default:
 					return null;

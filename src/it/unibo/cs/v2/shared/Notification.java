@@ -55,6 +55,8 @@ public abstract class Notification implements IsSerializable {
 			return NotificationType.ACCEPTEDSHARE;
 		else if (type.equals(NotificationType.REFUSEDSHARE.toString()))
 			return NotificationType.REFUSEDSHARE;
+		else if (type.equals(NotificationType.EXPORTCOMPLETE.toString()))
+			return NotificationType.EXPORTCOMPLETE;
 		else
 			return NotificationType.UNKNOWN;
 	}
