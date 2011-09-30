@@ -47,6 +47,11 @@
   </servlet>
   
   <servlet>
+  	<servlet-name>exportmachine</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.ExportMachineImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
   	<servlet-name>deletemachine</servlet-name>
   	<servlet-class>it.unibo.cs.v2.server.DeleteMachineImpl</servlet-class>
   </servlet>
@@ -140,6 +145,11 @@
   <servlet-mapping>
   	<servlet-name>createmachine</servlet-name>
   	<url-pattern>/flozconfigurator/createmachine</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>exportmachine</servlet-name>
+  	<url-pattern>/flozconfigurator/exportmachine</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
