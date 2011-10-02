@@ -38,6 +38,7 @@ public class MachineInfo implements IsSerializable {
 	private String realOwner;
 	private boolean userOwner;
 	private boolean tabletDevice;
+	private String longDescription;
 	private LinkedList<String> sharedWith = new LinkedList<String>();
 	private LinkedList<String> pendingShares = new LinkedList<String>();
 	
@@ -215,5 +216,13 @@ public class MachineInfo implements IsSerializable {
 
 	public void setUserOwner(boolean userOwner) {
 		this.userOwner = userOwner;
+	}
+
+	public String getLongDescription() {
+		return longDescription;
+	}
+
+	public void setLongDescription(String longDescription) {
+		this.longDescription = longDescription;
 	}
 }

@@ -46,7 +46,6 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 	
 	private Wizard newWizard = new NewMachineWizard();
 	
-	
 	private final ShutdownMachineAsync shutdownMachineProxy = (ShutdownMachineAsync) GWT.create(ShutdownMachine.class);
 	
 	protected MainPage() {
@@ -83,13 +82,12 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 			add((Widget) newWizard);
 		}
 		
-		else if (historyToken.equals(HistoryTokens.PREBUILT)) {
-			add(new HTML("New machine from prebuilt huh?"));
-		}
+		else if (historyToken.equals(HistoryTokens.PREBUILT)) 
+			add(new PrebuiltWizard());
 		
-		else if (historyToken.equals(HistoryTokens.EXPORT)) {
+		
+		else if (historyToken.equals(HistoryTokens.EXPORT)) 
 			add(new ExportMachineWizard());
-		}
 		
 		History.newItem("", false);
 	}

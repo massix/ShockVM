@@ -96,8 +96,12 @@ public class ShutdownMachineImpl extends RemoteServiceServlet implements Shutdow
 			}
 		};
 
-		if (exitValue > 0)
-			throw new Exception("Failed killing the machine.");
+		
+		// An exitValue of 0 indicates that the process was succesfully killed.
+		// An exitValue of 1 indicates that the PID didn't exist.
+		// All the other exitValue(s) indicate that the user can't kill that process.
+		if (exitValue > 1)
+			throw new Exception("Failed killing the machine. You don't have the permission to stop that process.");
 		
 		BufferedWriter activeMachinesWriter = new BufferedWriter(new FileWriter(activeMachines));
 		for (String[] values: machines) {

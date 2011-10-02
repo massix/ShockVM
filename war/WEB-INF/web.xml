@@ -32,6 +32,11 @@
   </servlet>
   
   <servlet>
+  	<servlet-name>getprebuiltmachines</servlet-name>
+  	<servlet-class>it.unibo.cs.v2.server.GetPrebuiltMachinesImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
   	<servlet-name>getisolist</servlet-name>
   	<servlet-class>it.unibo.cs.v2.server.GetIsoListImpl</servlet-class>
   </servlet>
@@ -130,6 +135,11 @@
   <servlet-mapping>
   	<servlet-name>getmachines</servlet-name>
   	<url-pattern>/flozconfigurator/getmachines</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+  	<servlet-name>getprebuiltmachines</servlet-name>
+  	<url-pattern>/flozconfigurator/getprebuiltmachines</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
