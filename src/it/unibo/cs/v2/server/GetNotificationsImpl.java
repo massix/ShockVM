@@ -22,6 +22,7 @@ import it.unibo.cs.v2.shared.Notification;
 import it.unibo.cs.v2.shared.NotificationType;
 import it.unibo.cs.v2.shared.RefuseMachineNotification;
 import it.unibo.cs.v2.shared.ShareMachineNotification;
+import it.unibo.cs.v2.shared.TimedNotification;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,6 +61,9 @@ public class GetNotificationsImpl extends RemoteServiceServlet implements GetNot
 		LinkedList<Notification> ret = new LinkedList<Notification>();
 		
 		for (File notification : notifications) {
+			boolean insertFirst = false;
+			boolean error = false;
+			
 			Notification add = null;
 			try {
 				BufferedReader notificationReader = new BufferedReader(new FileReader(notification));
@@ -81,6 +85,7 @@ public class GetNotificationsImpl extends RemoteServiceServlet implements GetNot
 					((ShareMachineNotification) add).setMachineName(notificationReader.readLine());
 					break;
 				case EXPORTCOMPLETE:
+				case IMPORTCOMPLETE:
 					add = new ExportCompleteNotification();
 					add.setType(type);
 					add.setFrom("ShockVM administrator");
@@ -91,12 +96,31 @@ public class GetNotificationsImpl extends RemoteServiceServlet implements GetNot
 					// Third line is the machine's name
 					((ExportCompleteNotification) add).setMachineName(notificationReader.readLine());
 					break;
+				case TIMEDJOB:
+					add = new TimedNotification();
+					add.setType(type);
+					add.setFrom("ShockVM administrator");
+
+					// Second line is the message of the job
+					((TimedNotification) add).setTimedMessage(notificationReader.readLine());
+					
+					// Third line is the percentage
+					((TimedNotification) add).setPercentage(new Double(notificationReader.readLine()));
+
+					insertFirst = true;
+					break;
+				case UNKNOWN:
+					error = true;
+					break;
 				default:
-					return null;
+					error = true;
+					break;
 				}
 				
-				add.setMessage(notificationReader.readLine());
-				add.setFileName(notification.getName());
+				if (!error) {
+					add.setMessage(notificationReader.readLine());
+					add.setFileName(notification.getName());
+				}
 				
 				notificationReader.close();
 			} catch (FileNotFoundException e) {
@@ -104,8 +128,14 @@ public class GetNotificationsImpl extends RemoteServiceServlet implements GetNot
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			ret.add(add);
+
+			if (!error) {
+				// Progresses should go first.
+				if (insertFirst)
+					ret.addFirst(add);
+				else
+					ret.addLast(add);
+			}
 		}
 		
 		return ret;

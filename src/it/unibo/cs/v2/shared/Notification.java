@@ -49,6 +49,9 @@ public abstract class Notification implements IsSerializable {
 	}
 	
 	public static final NotificationType parseNotificationType(String type) {
+		if (type == null || type.equals(""))
+			return NotificationType.UNKNOWN;
+		
 		if (type.equals(NotificationType.SHAREMACHINE.toString()))
 			return NotificationType.SHAREMACHINE;
 		else if (type.equals(NotificationType.ACCEPTEDSHARE.toString()))
@@ -57,6 +60,10 @@ public abstract class Notification implements IsSerializable {
 			return NotificationType.REFUSEDSHARE;
 		else if (type.equals(NotificationType.EXPORTCOMPLETE.toString()))
 			return NotificationType.EXPORTCOMPLETE;
+		else if (type.equals(NotificationType.IMPORTCOMPLETE.toString()))
+			return NotificationType.IMPORTCOMPLETE;
+		else if (type.equals(NotificationType.TIMEDJOB.toString()))
+			return NotificationType.TIMEDJOB;
 		else
 			return NotificationType.UNKNOWN;
 	}

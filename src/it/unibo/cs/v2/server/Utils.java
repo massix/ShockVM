@@ -17,6 +17,8 @@
 package it.unibo.cs.v2.server;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 
@@ -39,10 +41,10 @@ public class Utils {
 	public static void customCopy(File src, File dst, int chunkSize) throws Exception {
 		dst.createNewFile();
 		
-		FileReader srcReader = new FileReader(src);
-		FileWriter dstWriter = new FileWriter(dst);
+		FileInputStream srcReader = new FileInputStream(src);
+		FileOutputStream dstWriter = new FileOutputStream(dst);
 		
-		char[] chunk = new char[chunkSize];
+		byte[] chunk = new byte[chunkSize];
 		
 		int len = 0;
 		while ((len = srcReader.read(chunk, 0, chunkSize)) != -1)

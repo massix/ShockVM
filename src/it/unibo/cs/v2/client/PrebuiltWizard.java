@@ -21,6 +21,8 @@ import java.util.HashMap;
 
 import it.unibo.cs.v2.servlets.GetPrebuiltMachines;
 import it.unibo.cs.v2.servlets.GetPrebuiltMachinesAsync;
+import it.unibo.cs.v2.servlets.ImportMachine;
+import it.unibo.cs.v2.servlets.ImportMachineAsync;
 import it.unibo.cs.v2.shared.MachineInfo;
 
 import com.google.gwt.core.client.GWT;
@@ -34,6 +36,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 
 public class PrebuiltWizard extends HTMLPanel implements Wizard {
 	private GetPrebuiltMachinesAsync getPrebuiltMachinesProxy = GWT.create(GetPrebuiltMachines.class);
+	private ImportMachineAsync importMachineProxy = GWT.create(ImportMachine.class);
 	
 	public PrebuiltWizard() {
 		super("<h2>Import an existing machine</h2>");
@@ -61,21 +64,53 @@ public class PrebuiltWizard extends HTMLPanel implements Wizard {
 						HTMLPanel machineHTMLPanel = new HTMLPanel("");
 						machinePanel.add(machineHTMLPanel);
 						
+						// Fetch the informations about the machine
 						userHTMLPanel.add(machinePanel);
-						machineHTMLPanel.add(new HTML(m.getDescription()));
-						machineHTMLPanel.add(new HTML("\n" + m.getLongDescription()
+						machineHTMLPanel.add(new HTML("<b>Short description</b>"));
+						machineHTMLPanel.add(new HTML("&nbsp;" + m.getDescription() + "<br /><br />"));
+						
+						machineHTMLPanel.add(new HTML("<b>Long description</b><br/>"));
+						machineHTMLPanel.add(new HTML("&nbsp;" + m.getLongDescription()
 								.replace("<", "&lt;")
 								.replace(">", "&gt;")
-								.replace("\n", "<br />")
-								.replace("\\n", "<br />")
+								.replace("\n", "<br />&nbsp;")
+								.replace("\\n", "<br />&nbsp;")
 								));
+						
+						machineHTMLPanel.add(new HTML("<b>Storage</b><br />"));
+						machineHTMLPanel.add(new HTML("&nbsp;" + m.getHda() + " (" + m.getHdaSize() + ")<br />"));
+						if (m.isHdbEnabled()) 
+							machineHTMLPanel.add(new HTML("&nbsp;" + m.getHdb() + " (" + m.getHdbSize() + ")<br />"));
+						machineHTMLPanel.add(new HTML("<br />"));
+						
+						machineHTMLPanel.add(new HTML("<b>Networking</b><br />"));
+						if (m.isVirtuacluster())
+							machineHTMLPanel.add(new HTML("&nbsp;Virtuacluster support is <b>enabled</b>"));
+						else
+							machineHTMLPanel.add(new HTML("&nbsp;Virtuacluster support is <b>disabled</b>"));
+						
+						machineHTMLPanel.add(new HTML("<br />"));
 						machineHTMLPanel.add(importButton);
 						
 						importButton.addClickHandler(new ClickHandler() {
 							
 							@Override
 							public void onClick(ClickEvent event) {
-								GWT.log("Requested to import machine: " + m.getConfigurationFile());
+								importMachineProxy.importMachine(m, new AsyncCallback<Boolean>() {
+
+									@Override
+									public void onFailure(Throwable caught) {
+										clear();
+										add(new HTML("<span style=\"color: red\">" + caught.getMessage() + "</span>"));
+									}
+
+									@Override
+									public void onSuccess(Boolean result) {
+										clear();
+										add(new HTML("<span style=\"color: green\">Machine imported successfully. Please note that the process may take a while to complete. " +
+												"You'll receive a notification upon completition"));
+									}
+								});
 							}
 						});
 					}

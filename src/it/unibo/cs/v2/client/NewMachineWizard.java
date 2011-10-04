@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -149,8 +150,6 @@ public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedL
 		
 		table = new FlexTable();
 
-		table.setWidget(0, 0, new HTML("Choose a name for the primary disk: "));
-		table.setWidget(0, 1, disk1name);
 		table.setWidget(1, 0, new HTML("Choose a size for the primary disk: "));
 		
 		HorizontalPanel tempHP = new HorizontalPanel();
@@ -160,8 +159,6 @@ public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedL
 		tempHP.add(rb116);
 		table.setWidget(1, 1, tempHP);
 
-		table.setWidget(2, 0, new HTML("Choose a name for the secondary disk<span style=\"color: pink;\">*</span>: "));
-		table.setWidget(2, 1, disk2name);
 		table.setWidget(3, 0, new HTML("Choose a size for the secondary disk<span style=\"color: pink;\">*</span>: "));
 		
 		tempHP = new HorizontalPanel();
@@ -293,6 +290,11 @@ public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedL
 		final MachineInfo machineInfo = new MachineInfo();
 		hideError();
 		
+		if (RegExp.compile("[^A-z0-9]").test(name.getText())) {
+			showError("Machine name may only contain letters or digits (e.g. MyFirstMachine01)");
+			return;
+		}
+		
 		if (name.getText().equals("")) {
 			showError("Machine name can't be blank");
 			return;
@@ -307,27 +309,27 @@ public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedL
 				break;
 			}
 		}
-		
-		if (disk1name.getText().equals("")) {
-			showError("Disk name can't be blank");
-			return;
-		}
-		
-		machineInfo.setHda(disk1name.getText());
+//		
+//		if (!disk1name.getText().equals(name.getText())) {
+//			showError("Primary disk name must match the machine's name.");
+//			return;
+//		}
+//		
+		machineInfo.setHda(name.getText());
 		for (RadioButton b : rb1) {
 			if (!b.getValue())
 				continue;
 			machineInfo.setHdaSize(b.getText());
 		}
 		
-		if (disk2name.isEnabled() && disk2name.getText().equals((""))) {
-			showError("Disk name can't be blank");
-			return;
-		}
+//		if (disk2name.isEnabled() && disk2name.getText().equals((""))) {
+//			showError("Disk name can't be blank");
+//			return;
+//		}
 		
 		machineInfo.setHdbEnabled(disk2name.isEnabled());
 		if (disk2name.isEnabled()) {
-			machineInfo.setHdb(disk2name.getText());
+			machineInfo.setHdb(name.getText() + "-secondary");
 			for (RadioButton b: rb2) {
 				if (!b.getValue())
 					continue;

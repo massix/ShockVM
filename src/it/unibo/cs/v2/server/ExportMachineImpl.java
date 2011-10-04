@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Timer;
 
 import it.unibo.cs.v2.servlets.ExportMachine;
 import it.unibo.cs.v2.shared.MachineInfo;
@@ -77,9 +78,18 @@ public class ExportMachineImpl extends RemoteServiceServlet implements ExportMac
 			public void run() {
 				try {
 					// Copy the stuff
+					FileMonitor fm = new FileMonitor(hda, hdaDestination, home, "Exporting");
+					
+					fm.start();
 					Utils.customCopy(hda, hdaDestination, ((1024 * 1024) * 10));
-					if (machine.isHdbEnabled())
+					fm.cancel();
+					
+					if (machine.isHdbEnabled()) {
+						fm = new FileMonitor(hdb, hdbDestination, home, "Exporting");
+						fm.start();
 						Utils.customCopy(hdb, hdbDestination, ((1024 * 1024) * 10));
+						fm.cancel();
+					}
 					
 					// Write the description to a file
 					BufferedWriter bWriter = new BufferedWriter(new FileWriter(descriptionDestination));

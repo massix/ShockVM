@@ -33,8 +33,10 @@ import it.unibo.cs.v2.shared.ExportCompleteNotification;
 import it.unibo.cs.v2.shared.MachineInfo;
 import it.unibo.cs.v2.shared.MachineProcessInfo;
 import it.unibo.cs.v2.shared.Notification;
+import it.unibo.cs.v2.shared.NotificationType;
 import it.unibo.cs.v2.shared.RefuseMachineNotification;
 import it.unibo.cs.v2.shared.ShareMachineNotification;
+import it.unibo.cs.v2.shared.TimedNotification;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -132,6 +134,8 @@ public class MainPanel extends StackLayoutPanel {
 		firstPanel.add(new Anchor("Google Web Toolkit", "http://code.google.com/webtoolkit/", "_blank")); 
 		firstPanel.add(new HTML("&nbsp;&nbsp;the framework used for this webapp"));
 		
+		firstPanel.add(new HTML("<br /><b>Disclaimer</b><br />No Java Virtual Monkeys were harmed during the realization of Live ShockVM."));
+		
 		refresh.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -190,20 +194,26 @@ public class MainPanel extends StackLayoutPanel {
 				
 				// if the notifications' list has changed in some way, then refresh the panel
 				if (!notifications.equals(result)) {
+					int jobs = 0;
+					
 					notifications = result;
 					notificationsPanel.clear();
-					
-					setHeaderHTML(getWidgetCount() - 1, "Notifications (" + notifications.size() + ")");
 					
 					for (final Notification notification : notifications) {
 						notificationsPanel.add(new HTML("<b>New notification from: " + notification.getFrom() + "</b><br />"));
 						switch (notification.getType()) {
+						case TIMEDJOB:
+							final TimedNotification tn = (TimedNotification) notification;
+							notificationsPanel.add(new HTML(tn.getTimedMessage() + "<br />"));
+							Double d = new Double(tn.getPercentage());
+							notificationsPanel.add(new HTML("<progress max=\"100\" value=\"" + d.shortValue() + "\" /><br />"));
+							notificationsPanel.add(new HTML("&nbsp;&nbsp;<b>" + d.shortValue() + "%</b><br /><br />"));
+							jobs++;
+							break;
 						case ACCEPTEDSHARE:
 						case REFUSEDSHARE:
 							final Button read = new Button("Ok");
 							final RefuseMachineNotification rfn = (RefuseMachineNotification) notification;
-							
-//							notificationsPanel.add(new HTML(rfn.getFrom() + " refused a share.<br />"));
 							notificationsPanel.add(new HTML(rfn.getMessage() + "<br />"));
 							notificationsPanel.add(read);
 							notificationsPanel.add(new HTML("<br /><br />"));
@@ -230,6 +240,7 @@ public class MainPanel extends StackLayoutPanel {
 							});
 							
 							break;
+						case IMPORTCOMPLETE:
 						case EXPORTCOMPLETE:
 							final Button exportOk = new Button("Ok");
 							final ExportCompleteNotification ecn = (ExportCompleteNotification) notification;
@@ -253,8 +264,10 @@ public class MainPanel extends StackLayoutPanel {
 								}
 							});
 							
-							notificationsPanel.add(new HTML("Export of machine " + ecn.getMachineName() + " " + (ecn.isSucceeded()? "completed" : "gave an error")));
+							String action = notification.getType() == NotificationType.EXPORTCOMPLETE? "Export" : "Import";
+							notificationsPanel.add(new HTML(action + " of machine " + ecn.getMachineName() + " " + (ecn.isSucceeded()? "completed" : "gave an error")));
 							notificationsPanel.add(exportOk);
+							notificationsPanel.add(new HTML("<br />"));
 							break;
 						case SHAREMACHINE:
 							final Button accept = new Button("Accept");
@@ -316,6 +329,8 @@ public class MainPanel extends StackLayoutPanel {
 							break;
 						}
 					}
+					
+					setHeaderHTML(getWidgetCount() - 1, "Notifications (" + (notifications.size() - jobs) + ") [" + jobs + " running]");
 				}
 				
 				else if (result.size() < 1) {
