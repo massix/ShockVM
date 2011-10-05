@@ -20,7 +20,9 @@ import it.unibo.cs.v2.servlets.ShutdownMachine;
 import it.unibo.cs.v2.servlets.ShutdownMachineAsync;
 import it.unibo.cs.v2.shared.MachineProcessInfo;
 
+import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -64,6 +66,8 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 	
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
+		restoreContainer();
+		
 		// Clear the page and show the new one
 		clear();
 		
@@ -92,19 +96,61 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 		History.newItem("", false);
 	}
 
+	public static native void restoreContainer() /*-{
+		// Reset containers
+		$wnd.$D('dummycontainer').appendChild($wnd.$D('error_div'));
+		$wnd.$D('dummycontainer').appendChild($wnd.$D('outernCanvas'));
+		
+		$wnd.rfb.disconnect();
+	}-*/;
+	
+	public static native void showVNC(String host, String port) /*-{
+		$wnd.rfb.connect(host, port, '', '');
+
+		$wnd.$D('empty').appendChild($wnd.$D('error_div'));
+		$wnd.$D('empty').appendChild($wnd.$D('outernCanvas'));
+		
+		$wnd.$D('error_div').style.visibility = 'visible';
+
+		var controls;
+		controls = $wnd.$D('controls');
+		
+		// Add controls
+		var chtml = '<b>VNC Controls</b><br />'; 
+		chtml += '<input type="button" onclick="ungrab_keyboard();" value="Release Keyboard" class="gwt-Button"/> ';
+		chtml += '<input type="button" onclick="grab_keyboard();" value="Grab Keyboard" class="gwt-Button"/> ';
+		chtml += '<input type="button" onclick="send_cad();" value="Send C-A-D" class="gwt-Button"/> ';
+		chtml += '<input type="button" onclick="disconnect();" value="Disconnect" class="gwt-Button"/> ';
+		chtml += '<input type="button" onclick="scale_view(0.3);" value="30%" class="gwt-Button"/> ';
+		chtml += '<input type="button" onclick="scale_view(0.6);" value="60%" class="gwt-Button"/> ';
+		chtml += '<input type="button" onclick="scale_view(0.9);" value="90%" class="gwt-Button"/> ';
+		chtml += '<input type="button" onclick="scale_view(1);" value="100%" class="gwt-Button"/> ';
+		
+		controls.innerHTML = chtml;
+	}-*/;
+	
 	public void showApplet(final MachineProcessInfo mpi, final boolean newWindow) {
+		restoreContainer();
+		
 		clear();
 		
 		add(vncApplet);
 
+		vncApplet.getElement().setId("vncAppletContainer");
+		
 		vncApplet.setHTML("<h2>Viewing " + mpi.getMachineName() + " (" + mpi.getPid() + ")</h2>" +
-				"<b>To shutdown this machine, freeing the VNC server, " +
-				"please use the \"Shutdown this machine\" button positioned on the bottom of the page</b><br />" +
-				"<applet code=\"VncViewer.class\" archive=\"VncViewer.jar\" width=\"1024\" height=\"768\">" +
-				"<param name=\"port\" value=\"" + (5900+mpi.getVncServer()) + "\"/>" +
-				"<param name=\"open new window\" value=\"" + (newWindow? "yes" : "no") + "\"/>" +
-				"<param name=\"view only\" value=\"" + (mpi.isOwned()? "no" : "yes") + "\"/>" +
-				"</applet>");
+				"<div id=\"controls\"></div><div id=\"empty\"></div>");
+		showVNC("forse.v2.cs.unibo.it", String.valueOf(9000 + mpi.getVncServer()));
+//		showVNC("192.168.0.202", "9091");
+	
+//		vncApplet.setHTML("<h2>Viewing " + mpi.getMachineName() + " (" + mpi.getPid() + ")</h2>" +
+//				"<b>To shutdown this machine, freeing the VNC server, " +
+//				"please use the \"Shutdown this machine\" button positioned on the bottom of the page</b><br />" +
+//				"<applet code=\"VncViewer.class\" archive=\"VncViewer.jar\" width=\"800\" height=\"600\">" +
+//				"<param name=\"port\" value=\"" + (5900+mpi.getVncServer()) + "\"/>" +
+//				"<param name=\"open new window\" value=\"" + (newWindow? "yes" : "no") + "\"/>" +
+//				"<param name=\"view only\" value=\"" + (mpi.isOwned()? "no" : "yes") + "\"/>" +
+//				"</applet>");
 		final Button shutdown = new Button("Shutdown this machine");
 		add(shutdown);
 		
@@ -116,6 +162,7 @@ public class MainPage extends HTMLPanel implements ValueChangeHandler<String> {
 					
 					@Override
 					public void onSuccess(Void result) {
+						restoreContainer();
 						vncApplet.setHTML("<h2>Thank you</h2><span style=\"color: green\">" +
 								"Machine successfully shut down.</span>");
 						remove(shutdown);

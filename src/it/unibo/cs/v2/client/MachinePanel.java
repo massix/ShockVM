@@ -112,6 +112,13 @@ public class MachinePanel extends HTMLPanel {
 			final Image loadingGif = new Image("loading.gif");
 			add(loadingGif);
 			
+//			MachineProcessInfo dummyMPI = new MachineProcessInfo();
+//			dummyMPI.setMachineName("Dummy Machine");
+//			dummyMPI.setOwned(true);
+//			dummyMPI.setVncServer(10);
+//			dummyMPI.setPid(0);
+			
+//			MainPage.getInstance().showApplet(dummyMPI, newWindow.getValue());
 			startMachineProxy.startViewMachine(machineInfo, new AsyncCallback<MachineProcessInfo>() {
 
 				@Override
@@ -332,8 +339,8 @@ public class MachinePanel extends HTMLPanel {
 		add(new HTML("<br /><b>Command</b></br />"));
 		tabletDevice.setValue(true);
 		add(tabletDevice);
-		add(newLine);
-		add(newWindow);
+//		add(newLine);
+//		add(newWindow);
 		add(startDeletePanel);
 	}
 	
