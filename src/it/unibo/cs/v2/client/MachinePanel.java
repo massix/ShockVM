@@ -152,7 +152,7 @@ public class MachinePanel extends HTMLPanel {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					deleteMachineProxy.deleteMachine(machineInfo.getName(), new AsyncCallback<Boolean>() {
+					deleteMachineProxy.deleteMachine(machineInfo, new AsyncCallback<Boolean>() {
 
 						@Override
 						public void onFailure(Throwable caught) {
@@ -165,6 +165,7 @@ public class MachinePanel extends HTMLPanel {
 							clear();
 							add(new HTML("<span style=\"color: green\">Machine deleted successfully!</span>"));
 							confirmDelete.hide();
+							MainPanel.getInstance().refresh();
 						}
 					});
 					

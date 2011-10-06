@@ -363,6 +363,7 @@ public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedL
 				if (result) {
 					showSuccess("Machine successfully created");
 					finished = true;
+					MainPanel.getInstance().refresh();
 				}
 				else
 					showError("Error while creating the machine. This is programmers' fault, not yours. " +

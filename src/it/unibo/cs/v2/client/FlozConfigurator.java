@@ -147,7 +147,7 @@ public class FlozConfigurator extends DockLayoutPanel implements EntryPoint {
 		mainPage.getElement().getStyle().setMarginRight(3, Unit.EM);
 		History.addValueChangeHandler(mainPage);
 		leftPanel = new MainPanel(userInfo);
-		addEast(leftPanel, 23);
+		addWest(leftPanel, 23);
 		add(new ScrollPanel(mainPage));
 
 		leftPanel.setVisible(true);

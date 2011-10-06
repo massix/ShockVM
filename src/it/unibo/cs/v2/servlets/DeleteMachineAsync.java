@@ -16,8 +16,10 @@
 
 package it.unibo.cs.v2.servlets;
 
+import it.unibo.cs.v2.shared.MachineInfo;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface DeleteMachineAsync {
-	void deleteMachine(String machineName, AsyncCallback<Boolean> callback);
+	void deleteMachine(MachineInfo machineInfo, AsyncCallback<Boolean> callback);
 }

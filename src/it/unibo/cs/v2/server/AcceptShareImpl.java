@@ -65,7 +65,7 @@ public class AcceptShareImpl extends RemoteServiceServlet implements AcceptShare
 		File remoteMachineFile = new File(getServletContext().getRealPath("users/" + notification.getFrom() + 
 				"/" + notification.getMachineName().replace(' ', '_') + ".xml"));
 		
-		File localMachineFile = new File(home + "/" + notification.getMachineName().replace(' ', '_') + ".xml");
+		File localMachineFile = new File(home + "/shared-" + notification.getMachineName().replace(' ', '_') + "-" + notification.getFrom() + ".xml");
 		
 		if (!remoteMachineFile.exists())
 			throw new Exception("Remote machine file not found. Likely, the user " + notification.getFrom() + " has deleted it.");

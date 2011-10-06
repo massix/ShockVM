@@ -25,7 +25,16 @@ h1 {
 	width: 100%;
 	color: #AAAAAA;
 	
+	font-size: 2em;
 	text-decoration: underline;
+}
+
+h2 {
+	width: 100%;
+	font-size: 1.5em;
+	text-decoration: underline;
+	
+	margin-top: 0.8em;
 }
 
 div#Header {

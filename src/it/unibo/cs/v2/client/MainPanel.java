@@ -29,6 +29,8 @@ import it.unibo.cs.v2.servlets.RefuseShare;
 import it.unibo.cs.v2.servlets.RefuseShareAsync;
 import it.unibo.cs.v2.servlets.RemoveNotification;
 import it.unibo.cs.v2.servlets.RemoveNotificationAsync;
+import it.unibo.cs.v2.servlets.ShutdownMachine;
+import it.unibo.cs.v2.servlets.ShutdownMachineAsync;
 import it.unibo.cs.v2.shared.ExportCompleteNotification;
 import it.unibo.cs.v2.shared.MachineInfo;
 import it.unibo.cs.v2.shared.MachineProcessInfo;
@@ -42,6 +44,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -57,7 +60,10 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 
+// This is a some sort of a Singleton
 public class MainPanel extends StackLayoutPanel {
+	private static MainPanel _instance;
+	
 	private final int HEADERSIZE = 2;
 	
 	private final String WELCOME_STRING = "Welcome to <b>Live ShockVM</b>. <br/>" +
@@ -100,10 +106,21 @@ public class MainPanel extends StackLayoutPanel {
 	private final RefuseShareAsync refuseShareProxy = (RefuseShareAsync) GWT.create(RefuseShare.class);
 	private final RemoveNotificationAsync removeNotificationProxy = (RemoveNotificationAsync) GWT.create(RemoveNotification.class);
 	private final GetActiveMachinesAsync getActiveMachinesProxy = (GetActiveMachinesAsync) GWT.create(GetActiveMachines.class);
+	private final ShutdownMachineAsync shutdownMachineProxy = (ShutdownMachineAsync) GWT.create(ShutdownMachine.class);
+	
+	public static MainPanel getInstance() {
+		return _instance;
+	}
+	
+	public void refresh() {
+		buildMachinesList();
+	}
 	
 	public MainPanel(final HashMap<String, String> userInfo) {
 		super(Unit.EM);
 
+		_instance = this;
+		
 		this.userInfo = userInfo;
 		
 		final Anchor refresh = new Anchor("Refresh Machines' list");
@@ -134,6 +151,9 @@ public class MainPanel extends StackLayoutPanel {
 		firstPanel.add(new Anchor("Google Web Toolkit", "http://code.google.com/webtoolkit/", "_blank")); 
 		firstPanel.add(new HTML("&nbsp;&nbsp;the framework used for this webapp"));
 		
+		firstPanel.add(new Anchor("noVNC", "http://kanaka.github.com/noVNC", "_blank"));
+		firstPanel.add(new HTML("&nbsp;&nbsp;amazing HTML5 VNC client"));
+		
 		firstPanel.add(new HTML("<br /><b>Disclaimer</b><br />No Java Virtual Monkeys were harmed during the realization of Live ShockVM."));
 		
 		refresh.addClickHandler(new ClickHandler() {
@@ -162,9 +182,13 @@ public class MainPanel extends StackLayoutPanel {
 			@Override
 			public void onSuccess(LinkedList<MachineInfo> result) {
 				if (result != null) {
-					for (final MachineInfo machineInfo : result) 
+					for (final MachineInfo machineInfo : result) {
+						String machinename = machineInfo.getName();
+						if (!machineInfo.isUserOwner())
+							machinename += " (" + machineInfo.getRealOwner() + ")";
 						insert(new ScrollPanel(new MachinePanel(machineInfo, machineInfo.getRealOwner().equals(userInfo.get("login")))), 
-								machineInfo.getName(), HEADERSIZE, getWidgetCount() - 1);
+								machinename, HEADERSIZE, getWidgetCount() - 1);
+					}
 				}
 			}
 			
@@ -352,7 +376,7 @@ public class MainPanel extends StackLayoutPanel {
 			}
 
 			@Override
-			public void onSuccess(LinkedList<MachineProcessInfo> result) {
+			public void onSuccess(final LinkedList<MachineProcessInfo> result) {
 				if (result == null) {
 					activeMachinesPanel.clear();
 					activeMachinesPanel.add(new HTML("No running machines found."));
@@ -363,8 +387,50 @@ public class MainPanel extends StackLayoutPanel {
 					activeMachines = result;
 					
 					activeMachinesPanel.clear();
-					for (MachineProcessInfo mp : activeMachines) 
-						activeMachinesPanel.add(new HTML("<b>" + mp.getMachineName() + "</b> on server " + mp.getVncServer() + "<br />"));
+					for (final MachineProcessInfo mp : activeMachines) {
+						final Anchor shutdown = new Anchor("shutdown");
+						shutdown.getElement().getStyle().setDisplay(Display.INLINE);
+						
+						shutdown.addClickHandler(new ClickHandler() {
+							
+							@Override
+							public void onClick(ClickEvent event) {
+								shutdown.setVisible(false);
+								shutdownMachineProxy.shutdownMachine(mp, new AsyncCallback<Void>() {
+
+									@Override
+									public void onFailure(Throwable caught) {
+										final FlozDialogBox errorBox = new FlozDialogBox("Error while shutting down.");
+										Button closeDialog = new Button("Roger");
+										closeDialog.addClickHandler(new ClickHandler() {
+											
+											@Override
+											public void onClick(ClickEvent event) {
+												errorBox.hide();
+											}
+										});
+										
+										errorBox.add(new HTML(caught.getMessage()));
+										errorBox.addButton(closeDialog);
+										
+										errorBox.show();
+									}
+
+									@Override
+									public void onSuccess(Void result) {
+										/* Do nothing */
+									}
+								});
+							}
+						});
+						
+						HTML machineDesc = new HTML("<b>" + mp.getMachineName() + "</b> on server " + mp.getVncServer() + "&nbsp;");
+						machineDesc.getElement().getStyle().setDisplay(Display.INLINE);
+						
+						activeMachinesPanel.add(machineDesc);
+						activeMachinesPanel.add(shutdown);
+						activeMachinesPanel.add(new HTML());
+					}
 				}
 			}
 		});

@@ -3,13 +3,15 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
-    <link type="text/css" rel="stylesheet" href="FlozConfigurator.css">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 
     <title>Live ShockVM</title>
-   
+
+  	<!-- GWT stuff -->
     <script type="text/javascript" language="javascript" src="flozconfigurator/flozconfigurator.nocache.js"></script>
+    <link type="text/css" rel="stylesheet" href="FlozConfigurator.css">
+
+	<!-- noVNC stuff -->   
     <script language="javascript" type="text/javascript" src="include/callbacks.js"></script>
     <script language="javascript" type="text/javascript" src="include/vnc.js"></script>
 
@@ -21,9 +23,9 @@
 				'target': 			$D('outernCanvas'),
 				'encrypt': 			false,
 				'true_color': 		true,
-				'local_cursor': 	false,
-				'shared': 			false,
-				'viewportDrag':		true,
+				'local_cursor': 	true,
+				'shared': 			true,
+				'viewportDrag':		false,
 				'updateState':		update_status_cb
 			});
 			
@@ -43,7 +45,9 @@
     
     <div id="dummycontainer" style="visibility: hidden">
     	<div id="error_div"></div>
-    	<canvas id="outernCanvas"></canvas>
+    	<div id="canvasContainer">
+    		<canvas id="outernCanvas"></canvas>
+    	</div>
     </div>
   </body>
 </html>

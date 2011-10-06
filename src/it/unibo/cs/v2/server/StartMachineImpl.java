@@ -176,7 +176,7 @@ public class StartMachineImpl extends RemoteServiceServlet implements StartMachi
 		
 		kvmCommand += " -nographic -vnc :" + freeVnc;
 		
-		kvmCommand += " -m 1024 -enable-kvm -vga std";
+		kvmCommand += " -m 1024 -enable-kvm";
 		
 		if (machineInfo.isTabletDevice())
 			kvmCommand += " -usbdevice tablet";

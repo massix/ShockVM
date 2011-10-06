@@ -18,13 +18,8 @@ package it.unibo.cs.v2.server;
 
 import java.io.File;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import it.unibo.cs.v2.servlets.DeleteMachine;
+import it.unibo.cs.v2.shared.MachineInfo;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -32,7 +27,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class DeleteMachineImpl extends RemoteServiceServlet implements DeleteMachine {
 
 	@Override
-	public boolean deleteMachine(String machineName) throws Exception {
+	public boolean deleteMachine(MachineInfo machineInfo) throws Exception {
 		String home = (String) getThreadLocalRequest().getSession().getAttribute("home");
 		String login = (String) getThreadLocalRequest().getSession().getAttribute("login");
 		
@@ -41,33 +36,32 @@ public class DeleteMachineImpl extends RemoteServiceServlet implements DeleteMac
 		if (home.equals("") || login.equals(""))
 			throw new Exception("Session expired, refresh page and login again.");
 		
-		if (machineName.equals(""))
+		if (machineInfo.getName().equals(""))
 			throw new Exception("Machine name is blank. Something went wrong server-side, refresh the page and login again.");
 		
-		File machineFile = new File(home + "/" + machineName.replace(' ', '_') + ".xml");
+		System.out.println("Deleting " + machineInfo.getConfigurationFile());
 		
+		File machineFile = new File(machineInfo.getConfigurationFile());
 		if (!machineFile.exists())
 			throw new Exception("Machine not found.");
-		
-		DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document machineDoc = db.parse(machineFile);
-		
-		Element hdElem = (Element) machineDoc.getElementsByTagName("hda").item(0);
-		File hdFile = new File(home + "/" + hdElem.getAttribute("path"));
-		if (hdFile.exists())
-			hdFile.delete();
-		
-		hdElem = (Element) machineDoc.getElementsByTagName("hdb").item(0);
-		hdFile = new File(home + "/" + hdElem.getAttribute("path"));
-		if (hdFile.exists())
-			hdFile.delete();
+	
+		if (machineInfo.isUserOwner()) {
+			File hdF = new File(home + "/" + machineInfo.getHda());
+			if (hdF.exists())
+				hdF.delete();
+			
+			hdF = new File(home + "/" + machineInfo.getHdb());
+			if (hdF.exists())
+				hdF.delete();
+		}
 		
 		if (machineFile.delete()) {
-			logger.log("Deleted machine " + machineName);
+			logger.log("Deleted machine " + machineInfo.getConfigurationFile());
 			return true;
 		}
+		
 		else {
-			logger.log("Failed to delete machine " + machineName);
+			logger.log("Failed to delete machine " + machineInfo.getConfigurationFile());
 			return false;
 		}
 	}
