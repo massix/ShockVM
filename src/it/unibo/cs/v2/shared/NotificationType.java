@@ -23,5 +23,6 @@ public enum NotificationType {
 	EXPORTCOMPLETE,
 	IMPORTCOMPLETE,
 	TIMEDJOB,
+	MESSAGE,
 	UNKNOWN
 }

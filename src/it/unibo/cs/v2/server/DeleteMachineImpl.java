@@ -64,5 +64,7 @@ public class DeleteMachineImpl extends RemoteServiceServlet implements DeleteMac
 			logger.log("Failed to delete machine " + machineInfo.getConfigurationFile());
 			return false;
 		}
+		
+		// TODO: Force the user to realod the machines' list
 	}
 }

@@ -64,6 +64,8 @@ public abstract class Notification implements IsSerializable {
 			return NotificationType.IMPORTCOMPLETE;
 		else if (type.equals(NotificationType.TIMEDJOB.toString()))
 			return NotificationType.TIMEDJOB;
+		else if (type.equals(NotificationType.MESSAGE.toString()))
+			return NotificationType.MESSAGE;
 		else
 			return NotificationType.UNKNOWN;
 	}

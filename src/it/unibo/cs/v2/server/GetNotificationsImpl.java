@@ -18,6 +18,7 @@ package it.unibo.cs.v2.server;
 
 import it.unibo.cs.v2.servlets.GetNotifications;
 import it.unibo.cs.v2.shared.ExportCompleteNotification;
+import it.unibo.cs.v2.shared.Message;
 import it.unibo.cs.v2.shared.Notification;
 import it.unibo.cs.v2.shared.NotificationType;
 import it.unibo.cs.v2.shared.RefuseMachineNotification;
@@ -37,6 +38,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class GetNotificationsImpl extends RemoteServiceServlet implements GetNotifications {
 
+	/// TODO: messaging system to allow a faster interaction with the administrators (me, indeed)
+	
 	@Override
 	public LinkedList<Notification> getNotifications() {
 		String home = (String) getThreadLocalRequest().getSession().getAttribute("home");
@@ -108,6 +111,23 @@ public class GetNotificationsImpl extends RemoteServiceServlet implements GetNot
 					((TimedNotification) add).setPercentage(new Double(notificationReader.readLine()));
 
 					insertFirst = true;
+					break;
+				case MESSAGE:
+					add = new Message();
+					add.setType(type);
+					
+					// Second line is the sender of the message
+					add.setFrom(notificationReader.readLine());
+					
+					// Third line is the subject
+					((Message) add).setObject(notificationReader.readLine());
+					
+					// Then the whole content is the body of the mail
+					((Message) add).setMessage("");
+					
+					String line = "";
+					while ((line = notificationReader.readLine()) != null)
+						((Message) add).setMessage(((Message) add).getMessage() + "<br />" + line);
 					break;
 				case UNKNOWN:
 					error = true;

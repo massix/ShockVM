@@ -71,6 +71,8 @@ public class RemoveShareImpl extends RemoteServiceServlet implements RemoveShare
 		if (remoteMachineFile.exists())
 			remoteMachineFile.delete();
 		
+		/// TODO: drop a notification to the removed user
+		
 		return true;
 	}
 
