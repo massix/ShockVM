@@ -20,9 +20,7 @@ import it.unibo.cs.v2.servlets.ShutdownMachine;
 import it.unibo.cs.v2.servlets.ShutdownMachineAsync;
 import it.unibo.cs.v2.shared.MachineProcessInfo;
 
-import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

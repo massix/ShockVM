@@ -68,7 +68,6 @@ public class NewMachineWizard extends HTMLPanel implements AsyncCallback<LinkedL
 	private final String rb1group = "rb1group";
 	private final String rb2group = "rb2group";
 	
-	private final TextBox disk1name = new TextBox();
 	private final RadioButton rb12 = new RadioButton(rb1group, "2GB");
 	private final RadioButton rb14 = new RadioButton(rb1group, "4GB");
 	private final RadioButton rb18 = new RadioButton(rb1group, "8GB");

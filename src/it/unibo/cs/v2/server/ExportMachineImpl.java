@@ -16,16 +16,15 @@
 
 package it.unibo.cs.v2.server;
 
+import it.unibo.cs.v2.servlets.ExportMachine;
+import it.unibo.cs.v2.shared.MachineInfo;
+import it.unibo.cs.v2.shared.NotificationType;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Timer;
-
-import it.unibo.cs.v2.servlets.ExportMachine;
-import it.unibo.cs.v2.shared.MachineInfo;
-import it.unibo.cs.v2.shared.NotificationType;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 

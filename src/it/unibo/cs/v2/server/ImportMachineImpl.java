@@ -27,7 +27,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Timer;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
