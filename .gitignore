@@ -3,3 +3,7 @@ war/WEB-INF/classes/
 war/WEB-INF/deploy/
 war/flozconfigurator/
 war/users.xml
+
+gwt-unitCache/gwt-unitCache-00000133EAF14063
+
+war/logFile.log
